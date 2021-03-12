@@ -67,10 +67,11 @@
     }
     render();
     //创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
-    //var controls = new THREE.OrbitControls(camera,renderer.domElement);
-    var controls = new THREE.OrbitControls(camera);
+    var controls = new THREE.OrbitControls(camera,renderer.domElement);
+    //var controls = new THREE.OrbitControls(camera);
     //监听鼠标事件，触发渲染函数，更新canvas画布渲染效果
     controls.addEventListener('change', render);
+    
   </script>
 
 </body>

@@ -13,6 +13,8 @@
   </style>
   <!--引入three.js三维引擎-->
   <script src="..\three.js"></script>
+  <!-- 引入threejs扩展控件OrbitControls.js -->
+  <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/examples/js/controls/OrbitControls.js"></script>
   <!--script src="three.js"></script>-->
   <!--<script src="https://github.com/mrdoob/three.js/blob/dev/build/three.js"></script> 这个不行 -->
   <!-- <script src="./three.js"></script> -->
@@ -30,7 +32,7 @@
     /**
      * 创建网格模型
      */
-    var geoSphere = new THREE.SphereGeometry(100, 20, 10); //创建一个球体几何对象 //radius, widthSegments, heightSegments,
+    var geoSphere = new THREE.SphereGeometry(100, 20, 20); //创建一个球体几何对象 //radius, widthSegments, heightSegments,
     var geoBox = new THREE.BoxGeometry(200, 100, 100); //创建一个立方体几何对象Geometry
     var material = new THREE.MeshLambertMaterial({
       //color: 0x0000ff
@@ -87,9 +89,19 @@
       T0 = T1; //把本次时间赋值给上次时间
       requestAnimationFrame(render);
       renderer.render(scene, camera); //执行渲染操作
-      meshSphere.rotateY(0.001 * t); //旋转角速度0.001弧度每毫秒
+      meshSphere.rotateX(0.001 * t); //旋转角速度0.001弧度每毫秒
     }
-    render();
+
+    function render2() {
+      renderer.render(scene, camera); //执行渲染操作
+    }
+    render2();
+    //var controls = new THREE.OrbitControls(camera);
+    //创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
+    //监听鼠标事件，触发渲染函数，更新canvas画布渲染效果
+    //controls.addEventListener('change', render2);
+    controls.addEventListener('change', render);
     // renderer.render(scene, camera);
     //  renderer.render(scene2, camera);
   </script>
