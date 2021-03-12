@@ -50,11 +50,18 @@
     });
     var mesh3 = new THREE.Mesh(geometry3, material3); //网格模型对象Mesh
     // mesh3.translateX(120); //球体网格模型沿Y轴正方向平移120
-    mesh3.position.set(120,0,0);//设置mesh3模型对象的xyz坐标为120,0,0
+    mesh3.position.set(120, 0, 0); //设置mesh3模型对象的xyz坐标为120,0,0
     scene.add(mesh3); //
 
+    var geometry4 = new THREE.OctahedronGeometry(50);
+    var material4 = new THREE.MeshLambertMaterial({
+      color: 0xcdc733
+    });
+    var mesh4 = new THREE.Mesh(geometry4, material4);
+    mesh4.position.set(120,100,100);
+    scene.add(mesh4);
     // 辅助坐标系
-    var axisHelper = new THREE.AxesHelper(250);
+    var axisHelper = new THREE.AxesHelper(250); //红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴
     scene.add(axisHelper);
     /**
      * 光源设置
@@ -91,7 +98,7 @@
       requestAnimationFrame(render); //请求再次执行渲染函数render，渲染下一帧
     }
     render();
-    var controls = new THREE.OrbitControls(camera,renderer.domElement); //创建控件对象
+    var controls = new THREE.OrbitControls(camera, renderer.domElement); //创建控件对象
   </script>
 
 </body>

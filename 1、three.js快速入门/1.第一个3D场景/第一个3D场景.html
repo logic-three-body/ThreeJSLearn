@@ -81,7 +81,9 @@
     renderer.setClearColor(0xb9d3ff, 1); //设置背景颜色
     document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
     //执行渲染操作   指定场景、相机作为参数
-
+    // 辅助坐标系
+    var axisHelper = new THREE.AxesHelper(250); //红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴
+    scene.add(axisHelper);
     let T0 = new Date(); //上次时间
     function render() {
       let T1 = new Date(); //本次时间
@@ -89,7 +91,7 @@
       T0 = T1; //把本次时间赋值给上次时间
       requestAnimationFrame(render);
       renderer.render(scene, camera); //执行渲染操作
-      meshSphere.rotateX(0.001 * t); //旋转角速度0.001弧度每毫秒
+      meshSphere.rotateY(0.001 * t); //旋转角速度0.001弧度每毫秒
     }
 
     function render2() {
