@@ -95,13 +95,13 @@
     function render2() {
       renderer.render(scene, camera); //执行渲染操作
     }
-    render2();
+    render();
     //var controls = new THREE.OrbitControls(camera);
     //创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
     var controls = new THREE.OrbitControls(camera, renderer.domElement);
     //监听鼠标事件，触发渲染函数，更新canvas画布渲染效果
     //controls.addEventListener('change', render2);
-    controls.addEventListener('change', render);
+    //controls.addEventListener('change', render);
     // renderer.render(scene, camera);
     //  renderer.render(scene2, camera);
   </script>
