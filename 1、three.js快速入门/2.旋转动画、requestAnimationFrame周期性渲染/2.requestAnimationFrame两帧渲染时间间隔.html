@@ -14,6 +14,7 @@
   <!--引入three.js三维引擎-->
   <script src="..\three.js"></script>
 </head>
+
 <body>
   <script>
     /**
@@ -54,24 +55,34 @@
      * 创建渲染器对象
      */
     var renderer = new THREE.WebGLRenderer();
-    renderer.setSize(width, height);//设置渲染区域尺寸
+    renderer.setSize(width, height); //设置渲染区域尺寸
     renderer.setClearColor(0xb9d3ff, 1); //设置背景颜色
     document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
 
     // 渲染函数
-    let T0 = new Date();//上次时间
+    let T0 = new Date(); //上次时间
     function render() {
-        let T1 = new Date();//本次时间
-        let t = T1-T0;//时间差
-        //console.log(t);//两帧之间时间间隔  单位：ms
-        console.log(Math.round(1000/t));//渲染频率
-        T0 = T1;//把本次时间赋值给上次时间
-        renderer.render(scene,camera);//执行渲染操作
-        mesh.rotateY(0.01);//每次绕y轴旋转0.01弧度
-        requestAnimationFrame(render);//请求再次执行渲染函数render，渲染下一帧
+      let T1 = new Date(); //本次时间
+      let t = T1 - T0; //时间差
+      //console.log(t);//两帧之间时间间隔  单位：ms
+      console.log(Math.round(1000 / t)); //渲染频率
+      T0 = T1; //把本次时间赋值给上次时间
+      renderer.render(scene, camera); //执行渲染操作
+      mesh.rotateY(0.01); //每次绕y轴旋转0.01弧度
+      requestAnimationFrame(render); //请求再次执行渲染函数render，渲染下一帧
     }
-    render();
 
+    let T02 = new Date(); //上次时间
+    function render2() {
+      let T12 = new Date(); //本次时间
+      let t = T12 - T02; //时间差
+      T02 = T12; //把本次时间赋值给上次时间
+      requestAnimationFrame(render);
+      renderer.render(scene, camera); //执行渲染操作
+      mesh.rotateY(0.001 * t); //旋转角速度0.001弧度每毫秒
+    }
+    //render();
+    render2();
   </script>
 
 </body>

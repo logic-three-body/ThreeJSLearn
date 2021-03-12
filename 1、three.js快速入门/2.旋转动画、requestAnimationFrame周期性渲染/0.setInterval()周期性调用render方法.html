@@ -15,6 +15,7 @@
   <script src="..\three.js"></script>
 
 </head>
+
 <body>
   <script>
     /**
@@ -55,19 +56,19 @@
      * 创建渲染器对象
      */
     var renderer = new THREE.WebGLRenderer();
-    renderer.setSize(width, height);//设置渲染区域尺寸
+    renderer.setSize(width, height); //设置渲染区域尺寸
     renderer.setClearColor(0xb9d3ff, 1); //设置背景颜色
     document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
 
     // 渲染函数
     function render() {
-        renderer.render(scene,camera);//执行渲染操作
-        mesh.rotateY(0.01);//每次绕y轴旋转0.01弧度
+      renderer.render(scene, camera); //执行渲染操作
+      mesh.rotateY(0.01); //每次绕y轴旋转0.01弧度
     }
     //间隔20ms周期性调用函数fun,20ms也就是刷新频率是50FPS(1s/20ms)
-    setInterval("render()",20);
+    //setInterval("render()", 20);
     //设置调用render函数的周期为200ms，刷新频率相当于5你能明显的感受到卡顿
-    // setInterval("render()",200);
+     setInterval("render()",20);
   </script>
 
 </body>
