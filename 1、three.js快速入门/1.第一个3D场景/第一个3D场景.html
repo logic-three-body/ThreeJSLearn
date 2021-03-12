@@ -30,7 +30,7 @@
     /**
      * 创建网格模型
      */
-    var geoSphere = new THREE.SphereGeometry(100, 100, 100); //创建一个球体几何对象 //radius, widthSegments, heightSegments,
+    var geoSphere = new THREE.SphereGeometry(100, 20, 10); //创建一个球体几何对象 //radius, widthSegments, heightSegments,
     var geoBox = new THREE.BoxGeometry(200, 100, 100); //创建一个立方体几何对象Geometry
     var material = new THREE.MeshLambertMaterial({
       //color: 0x0000ff
@@ -79,7 +79,18 @@
     renderer.setClearColor(0xb9d3ff, 1); //设置背景颜色
     document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
     //执行渲染操作   指定场景、相机作为参数
-    renderer.render(scene, camera);
+
+    let T0 = new Date(); //上次时间
+    function render() {
+      let T1 = new Date(); //本次时间
+      let t = T1 - T0; //时间差
+      T0 = T1; //把本次时间赋值给上次时间
+      requestAnimationFrame(render);
+      renderer.render(scene, camera); //执行渲染操作
+      meshSphere.rotateY(0.001 * t); //旋转角速度0.001弧度每毫秒
+    }
+    render();
+    // renderer.render(scene, camera);
     //  renderer.render(scene2, camera);
   </script>
 
