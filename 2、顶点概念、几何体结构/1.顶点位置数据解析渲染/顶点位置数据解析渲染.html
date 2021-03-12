@@ -30,8 +30,8 @@
      * 创建网格模型
      */
     //var geometry = new THREE.BoxGeometry(10, 10, 10);
-     var geometry = new THREE.BufferGeometry(); //创建一个Buffer类型几何体对象
-    // // var geometry = new THREE.BoxBufferGeometry(10, 10, 10);
+    var geometry = new THREE.BufferGeometry(); //创建一个Buffer类型几何体对象
+  //  var geometry = new THREE.BoxBufferGeometry(10, 10, 10);
     console.log(geometry);
     // //类型数组创建顶点数据
     var vertices = new Float32Array([
@@ -41,6 +41,9 @@
       0, 0, 10, //顶点4坐标
       0, 0, 100, //顶点5坐标
       50, 0, 10, //顶点6坐标
+      10, 50, 100, //顶点7
+      100, 10, 20,//顶点8
+      20,100,20
     ]);
     // // 创建属性缓冲区对象
     var attribue = new THREE.BufferAttribute(vertices, 3); //3个为一组，表示一个顶点的xyz坐标
@@ -48,34 +51,35 @@
     //
     // // 设置几何体attributes属性的位置属性
     geometry.attributes.position = attribue;
-    
+
     // 三角面(网格)渲染模式
     var material = new THREE.MeshBasicMaterial({
       color: 0x0000ff, //三角面颜色
-      side: THREE.DoubleSide //两面可见
+      side: //THREE.SingleSide //单面可见
+        THREE.DoubleSide //两面可见
     }); //材质对象
     var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
     scene.add(mesh); //网格模型添加到场景中
 
     // 点渲染模式
-    // var material = new THREE.PointsMaterial({
-    //   color: 0xff0000,
-    //   size: 5.0 //点对象像素尺寸
-    // }); //材质对象
-    // var points = new THREE.Points(geometry, material); //点模型对象
-    // scene.add(points); //点对象添加到场景中
+    var material = new THREE.PointsMaterial({
+      color: 0xff0000,
+      size: 15.0, //点对象像素尺寸
+    }); //材质对象
+    var points = new THREE.Points(geometry, material); //点模型对象
+    scene.add(points); //点对象添加到场景中
 
     // 线条渲染模式
-    // var material=new THREE.LineBasicMaterial({
-    //     color:0xff0000 //线条颜色
-    // });//材质对象
-    // var line=new THREE.Line(geometry,material);//线条模型对象
-    // scene.add(line);//线条对象添加到场景中
+    var material = new THREE.LineBasicMaterial({
+      color: 0xff0000 //线条颜色
+    }); //材质对象
+    var line = new THREE.Line(geometry, material); //线条模型对象
+    scene.add(line); //线条对象添加到场景中
 
 
 
     // 辅助坐标系   老版本AxisHelper 新版本AxesHelper
-    var axisHelper = new THREE.AxisHelper(250);
+    var axisHelper = new THREE.AxisHelper(250); //红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴
     scene.add(axisHelper);
     /**
      * 光源设置
