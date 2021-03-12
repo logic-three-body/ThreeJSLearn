@@ -15,6 +15,9 @@
   <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/build/three.js"></script>
   <!-- 引入threejs扩展控件OrbitControls.js -->
   <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/examples/js/controls/OrbitControls.js"></script>
+  <!-- <script src="..\..\..\..\three.js-master/src/core/BufferAttribute.js"></script>
+  <script src="..\..\..\..\three.js-master/src/core/BufferGeometry.js"></script> -->
+
 </head>
 
 <body>
@@ -26,26 +29,26 @@
     /**
      * 创建网格模型
      */
-    var geometry = new THREE.BoxGeometry(10, 10, 10);
-    // var geometry = new THREE.BufferGeometry(); //创建一个Buffer类型几何体对象
+    //var geometry = new THREE.BoxGeometry(10, 10, 10);
+     var geometry = new THREE.BufferGeometry(); //创建一个Buffer类型几何体对象
     // // var geometry = new THREE.BoxBufferGeometry(10, 10, 10);
     console.log(geometry);
     // //类型数组创建顶点数据
-    // var vertices = new Float32Array([
-    //   0, 0, 0, //顶点1坐标
-    //   50, 0, 0, //顶点2坐标
-    //   0, 100, 0, //顶点3坐标
-    //   0, 0, 10, //顶点4坐标
-    //   0, 0, 100, //顶点5坐标
-    //   50, 0, 10, //顶点6坐标
-    // ]);
+    var vertices = new Float32Array([
+      0, 0, 0, //顶点1坐标
+      50, 0, 0, //顶点2坐标
+      0, 100, 0, //顶点3坐标
+      0, 0, 10, //顶点4坐标
+      0, 0, 100, //顶点5坐标
+      50, 0, 10, //顶点6坐标
+    ]);
     // // 创建属性缓冲区对象
-    // var attribue = new THREE.BufferAttribute(vertices, 3); //3个为一组，表示一个顶点的xyz坐标
+    var attribue = new THREE.BufferAttribute(vertices, 3); //3个为一组，表示一个顶点的xyz坐标
     //
     //
     // // 设置几何体attributes属性的位置属性
-    // geometry.attributes.position = attribue;
-
+    geometry.attributes.position = attribue;
+    
     // 三角面(网格)渲染模式
     var material = new THREE.MeshBasicMaterial({
       color: 0x0000ff, //三角面颜色
@@ -109,7 +112,7 @@
     }
     render();
     //创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
-    var controls = new THREE.OrbitControls(camera,renderer.domElement);
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
     //监听鼠标事件，触发渲染函数，更新canvas画布渲染效果
     controls.addEventListener('change', render);
   </script>

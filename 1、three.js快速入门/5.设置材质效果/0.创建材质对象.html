@@ -27,6 +27,7 @@
      * 创建网格模型
      */
     var geometry = new THREE.SphereGeometry(60, 40, 40);
+    var geometry2 = new THREE.SphereGeometry(60, 40, 40);
     // var geometry = new THREE.BoxGeometry(100, 100, 100); //创建一个立方体几何对象Geometry
     //基础网格材质对象   不受光照影响  没有棱角感
     // var material = new THREE.MeshBasicMaterial({
@@ -36,18 +37,24 @@
 
     // 与光照计算  漫反射   产生棱角感
     var material = new THREE.MeshLambertMaterial({
-      color: 0x00ff00,
-      // wireframe:true,//线条模式渲染
+      color: 0xff0000,
+      //wireframe:true,//线条模式渲染
     });
 
     // 与光照计算  高光效果（镜面反射）    产生棱角感
-    // var material = new THREE.MeshPhongMaterial({
-    //   color: 0xff0000,
-    //   specular:0x444444,
-    //   shininess:30,
-    // });
+    var material2 = new THREE.MeshPhongMaterial({
+      color: 0xff0000,
+      specular: 0x693c72,
+      shininess: 30,
+    });
     var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+    var mesh2 = new THREE.Mesh(geometry2, material2); //网格模型对象Mesh
     scene.add(mesh); //网格模型添加到场景中
+    scene.add(mesh2);
+    mesh2.position.set(125, 0, 0);
+    // 辅助坐标系
+    var axisHelper = new THREE.AxesHelper(250); //红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴
+    scene.add(axisHelper);
     /**
      * 光源设置
      */
@@ -83,7 +90,7 @@
     }
     render();
     //创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
-    var controls = new THREE.OrbitControls(camera,renderer.domElement);
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
     //监听鼠标事件，触发渲染函数，更新canvas画布渲染效果
     controls.addEventListener('change', render);
   </script>
