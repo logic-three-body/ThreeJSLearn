@@ -62,13 +62,23 @@
     scene.add(mesh); //网格模型添加到场景中
 
     // 线条渲染模式
-    var material=new THREE.LineBasicMaterial({
-        color:0xff0000, //线条颜色
-        linewidth: 10
-    });//材质对象
-    var line=new THREE.Line(geometry,material);//线条模型对象
-    scene.add(line);//线条对象添加到场景中
-
+    var material = new THREE.LineBasicMaterial({
+      color: 0xff0000, //线条颜色
+      linewidth: 10
+    }); //材质对象
+    var line = new THREE.Line(geometry, material); //线条模型对象
+    scene.add(line); //线条对象添加到场景中
+    //材质对象
+    var material = new THREE.PointsMaterial({
+      // 使用顶点颜色数据渲染模型，不需要再定义color属性
+      color: 0xff0000,
+      //vertexColors: THREE.VertexColors, //以顶点颜色为准
+      size: 10.0, //点对象像素尺寸
+      // wireframe: true, //线条模式渲染
+    });
+    // 点渲染模式  点模型对象Points
+    var points = new THREE.Points(geometry, material); //点模型对象
+    scene.add(points); //点对象添加到场景中
     // 辅助坐标系
     var axisHelper = new THREE.AxisHelper(250);
     scene.add(axisHelper);
@@ -107,7 +117,7 @@
     }
     render();
     //创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
-    var controls = new THREE.OrbitControls(camera,renderer.domElement);
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
     //监听鼠标事件，触发渲染函数，更新canvas画布渲染效果
     controls.addEventListener('change', render);
   </script>

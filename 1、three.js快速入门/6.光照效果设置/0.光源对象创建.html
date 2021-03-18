@@ -28,7 +28,8 @@
      */
     var geometry = new THREE.BoxGeometry(100, 100, 100); //创建一个立方体几何对象Geometry
     var material = new THREE.MeshLambertMaterial({
-      color: 0x0000ff
+      color: 0x0000ff,
+      //wireframe: true,
     }); //材质对象Material
     var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
     scene.add(mesh); //网格模型添加到场景中
@@ -69,7 +70,7 @@
     }
     render();
     //创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
-    var controls = new THREE.OrbitControls(camera,renderer.domElement);
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
     //监听鼠标事件，触发渲染函数，更新canvas画布渲染效果
     controls.addEventListener('change', render);
   </script>
