@@ -26,7 +26,7 @@
     /**
      * 创建网格模型
      */
-    var geometry = new THREE.BoxGeometry(100, 100, 100);//立方体几何体
+    var geometry = new THREE.BoxGeometry(100, 100, 100); //立方体几何体
     //基础网格材质对象   不受光照影响  没有棱角感
     // var material = new THREE.MeshBasicMaterial({
     //   color: 0x0000ff,
@@ -63,6 +63,7 @@
     var s = 150; //三维场景显示范围控制系数，系数越大，显示的范围越大
     //创建相机对象
     var camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);
+    var camera = new THREE.PerspectiveCamera(140, width / height, 1, 1000);
     camera.position.set(200, 300, 200); //设置相机位置
     camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
     /**
@@ -79,7 +80,7 @@
     }
     render();
     //创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
-    var controls = new THREE.OrbitControls(camera,renderer.domElement);
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
     //监听鼠标事件，触发渲染函数，更新canvas画布渲染效果
     controls.addEventListener('change', render);
   </script>
