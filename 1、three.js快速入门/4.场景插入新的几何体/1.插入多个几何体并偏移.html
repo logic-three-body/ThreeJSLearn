@@ -80,8 +80,10 @@
     scene.add(circle);
 
     var geometry7 = new THREE.ConeBufferGeometry(50, 200, 10);
-    var material7 = new THREE.MeshBasicMaterial({
-      color: 0xffff00,
+    var material7 = new THREE.MeshPhongMaterial({
+      color: 0xeeb76b,
+      specular: 0x444444, //高光部分的颜色
+      shininess: 10, //高光部分的亮度，默认30
     });
     var cone = new THREE.Mesh(geometry7, material7)
     cone.position.set(0, 0, 100);
@@ -160,13 +162,14 @@
           circle.rotateZ(0.1);
           cone.translateY(10);
           cone.rotateY(0.1);
+          mesh3.rotateX(Math.PI/4);
         }
       );
 
       window.addEventListener('keyup',
         function (e) {
           console.log(e);
-          mesh1.translateY(-30);
+          mesh1.translateY(-40);
         }
       );
     }
