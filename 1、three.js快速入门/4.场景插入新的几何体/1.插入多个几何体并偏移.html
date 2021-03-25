@@ -37,7 +37,8 @@
     // 球体网格模型
     var geometry2 = new THREE.SphereGeometry(60, 40, 40);
     var material2 = new THREE.MeshLambertMaterial({
-      color: 0xff00ff
+      color: 0xff00ff,
+      wireframe: true,
     });
     var mesh2 = new THREE.Mesh(geometry2, material2); //网格模型对象Mesh
     mesh2.translateY(120); //球体网格模型沿Y轴正方向平移120
@@ -46,23 +47,71 @@
     // 圆柱网格模型
     var geometry3 = new THREE.CylinderGeometry(50, 50, 100, 25);
     var material3 = new THREE.MeshLambertMaterial({
-      color: 0xffff00
+      color: 0xbe0000,
     });
     var mesh3 = new THREE.Mesh(geometry3, material3); //网格模型对象Mesh
     // mesh3.translateX(120); //球体网格模型沿Y轴正方向平移120
     mesh3.position.set(120, 0, 0); //设置mesh3模型对象的xyz坐标为120,0,0
-    scene.add(mesh3); //
+    scene.add(mesh3);
 
     var geometry4 = new THREE.OctahedronGeometry(50);
     var material4 = new THREE.MeshLambertMaterial({
-      color: 0xcdc733
+      color: 0x9ede73
     });
     var mesh4 = new THREE.Mesh(geometry4, material4);
     mesh4.position.set(120, 100, 100);
     scene.add(mesh4);
+
+    var geometry5 = new THREE.CylinderGeometry(5, 50, 60, 25);
+    var matrtial5 = new THREE.MeshLambertMaterial({
+      color: 0xcdc733,
+    });
+    var mesh5 = new THREE.Mesh(geometry5, matrtial5);
+    mesh5.position.set(120, 150, 100);
+    scene.add(mesh5);
+    var geometry6 = new THREE.CircleBufferGeometry(50, 10);
+    var material6 = new THREE.MeshPhongMaterial({
+      color: 0xff0000,
+      specular: 0x444444, //高光部分的颜色
+      shininess: 20, //高光部分的亮度，默认30
+    });
+    var circle = new THREE.Mesh(geometry6, material6);
+    circle.position.set(0, 100, 0);
+    scene.add(circle);
+
+    var geometry7 = new THREE.ConeBufferGeometry(50, 200, 10);
+    var material7 = new THREE.MeshBasicMaterial({
+      color: 0xffff00,
+    });
+    var cone = new THREE.Mesh(geometry7, material7)
+    cone.position.set(0, 0, 100);
+    scene.add(cone);
+
+    var geometry8 = new THREE.CylinderGeometry(50, 5, 60, 25);
+    var matrtial8 = new THREE.MeshLambertMaterial({
+      color: 0xeeb76b,
+    });
+    var mesh8 = new THREE.Mesh(geometry8, matrtial8);
+    mesh8.position.set(150, 200, 100);
+    scene.add(mesh8);
     // 辅助坐标系
-    var axisHelper = new THREE.AxesHelper(250); //红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴
+    var axisHelper = new THREE.AxesHelper(2500); //红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴
     scene.add(axisHelper);
+    var geometry9 = new THREE.OctahedronGeometry(50);
+    var material9 = new THREE.MeshLambertMaterial({
+      color: 0xf7ea00
+    });
+    var mesh9 = new THREE.Mesh(geometry9, material9);
+    mesh9.position.set(120, 100, 100);
+    scene.add(mesh9);
+
+    var geometry10 = new THREE.CylinderGeometry(70, 15, 60, 25);
+    var matrtial10 = new THREE.MeshLambertMaterial({
+      color: 0x9ede73,
+    });
+    var mesh10 = new THREE.Mesh(geometry10, matrtial10);
+    mesh10.position.set(265, 200, 100);
+    scene.add(mesh10);
     /**
      * 光源设置
      */
@@ -70,6 +119,10 @@
     var point = new THREE.PointLight(0xffffff);
     point.position.set(400, 200, 300); //点光源位置
     scene.add(point); //点光源添加到场景中
+
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 0.75); //平行光
+    directionalLight.position.set(80, 100, 50);
+    scene.add(directionalLight);
     //环境光
     var ambient = new THREE.AmbientLight(0x444444);
     scene.add(ambient);
@@ -92,11 +145,21 @@
     renderer.setClearColor(0x666666, 1); //设置背景颜色
     document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
 
+
+
+
+
+
     function setKeyEvents() {
       window.addEventListener('keydown', //键盘按下，mesh1上移
         function (e) {
           console.log(e);
           mesh1.translateY(40);
+          mesh2.rotateY(40);
+          circle.translateY(-10);
+          circle.rotateZ(0.1);
+          cone.translateY(10);
+          cone.rotateY(0.1);
         }
       );
 
@@ -112,6 +175,12 @@
     setKeyEvents();
     // 渲染函数
     function render() {
+      mesh4.rotateY(0.01); //每次绕y轴旋转0.01弧度
+      mesh8.rotateY(-0.03);
+      mesh9.rotateY(-0.008);
+      mesh5.rotateY(0.02);
+      mesh10.rotateY(-0.02);
+
       renderer.render(scene, camera); //执行渲染操作
       requestAnimationFrame(render); //请求再次执行渲染函数render，渲染下一帧
     }

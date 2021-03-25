@@ -41,9 +41,8 @@
     point.position.set(400, 200, 300); //点光源位置
     // 通过add方法插入场景中，不插入的话，渲染的时候不会获取光源的信息进行光照计算
     scene.add(point); //点光源添加到场景中
-    //环境光    环境光颜色与网格模型的颜色进行RGB进行乘法运算
-    var ambient = new THREE.AmbientLight(0x444444);
-    scene.add(ambient);
+
+
 
     /**
      * 相机设置
