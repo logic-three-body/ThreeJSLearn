@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>源码对应电子书:百度"three.js 郭隆邦"</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            /* 隐藏body窗口区域滚动条 */
+        }
+    </style>
+    <!--引入three.js三维引擎-->
+    <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/build/three.js"></script>
+    <!-- 引入threejs扩展控件OrbitControls.js -->
+    <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/examples/js/controls/OrbitControls.js"></script>
+</head>
+
+<body>
+    <script>
+//http://www.yanhuangxueyuan.com/3D/solarSystem/index.html
+
+        /**
+         * 创建场景对象Scene
+         */
+        var scene = new THREE.Scene();
+        /**
+         * 创建网格模型
+         */
+
+        /*
+         太阳自发光 -> BlingPhong
+        */
+
+
+        // 太阳网格模型
+        var sunGeo = new THREE.SphereGeometry(60, 40, 40); //太阳半径为60
+        var sunMaterial = new THREE.MeshPhongMaterial({
+            color: 0xe84545,
+            emissive: 0xe2703a,
+            shininess: 30,
+        });
+        var sun = new THREE.Mesh(sunGeo, sunMaterial); //网格模型对象Mesh
+        scene.add(sun);
+
+
+
+        // 辅助坐标系
+        var axisHelper = new THREE.AxesHelper(2500); //红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴
+        scene.add(axisHelper);
+        /**
+         * 光源设置
+         */
+        //点光源 创造太阳氛围
+        /*
+        通过在sun的mesh四周添加点光源创作出太阳耀斑的感觉
+        
+        */
+        var pointrf = new THREE.PointLight(0xffc93c);
+        pointrf.position.set(90, 0, 0); //点光源位置
+        scene.add(pointrf); //点光源添加到场景中
+
+        var pointrb = new THREE.PointLight(0xffc93c);
+        pointrb.position.set(-90, 0, 0); //点光源位置
+        scene.add(pointrb); //点光源添加到场景中
+
+        var pointgf = new THREE.PointLight(0xffc93c);
+        pointgf.position.set(0, 90, 0); //点光源位置
+        scene.add(pointgf); //点光源添加到场景中
+
+        var pointgb = new THREE.PointLight(0xffc93c);
+        pointgb.position.set(0, -90, 0); //点光源位置
+        scene.add(pointgb); //点光源添加到场景中
+
+        var pointbf = new THREE.PointLight(0xffc93c);
+        pointbf.position.set(0, 0, 90); //点光源位置
+        scene.add(pointbf); //点光源添加到场景中
+
+        var pointbb = new THREE.PointLight(0xffc93c);
+        pointbb.position.set(0, 0, -90); //点光源位置
+        scene.add(pointbb); //点光源添加到场景中
+
+        var ambient = new THREE.AmbientLight(0x310b0b);
+        scene.add(ambient);
+        /**
+         * 相机设置
+         */
+        var width = window.innerWidth; //窗口宽度
+        var height = window.innerHeight; //窗口高度
+        var k = width / height; //窗口宽高比
+        var s = 150; //三维场景显示范围控制系数，系数越大，显示的范围越大
+        //创建相机对象
+        var camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);
+        camera.position.set(200, 300, 200); //设置相机位置
+        camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
+        /**
+         * 创建渲染器对象
+         */
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(width, height); //设置渲染区域尺寸
+        renderer.setClearColor(0x666666, 1); //设置背景颜色
+        document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
+
+
+
+
+
+
+        function setKeyEvents() {
+            window.addEventListener('keydown', //键盘按下，mesh1上移
+                function (e) {
+
+                }
+            );
+
+            window.addEventListener('keyup',
+                function (e) {
+
+                }
+            );
+        }
+
+        //键盘交互
+        setKeyEvents();
+        // 渲染函数
+        function render() {
+
+            sun.rotateX(0.01);
+            renderer.render(scene, camera); //执行渲染操作
+            requestAnimationFrame(render); //请求再次执行渲染函数render，渲染下一帧
+        }
+        render();
+        var controls = new THREE.OrbitControls(camera, renderer.domElement); //创建控件对象
+    </script>
+
+</body>
+
+</html>
