@@ -64,7 +64,7 @@
     // 设置计算阴影的区域，注意包裹对象的周围
     spotLight.shadow.camera.near = 1;
     spotLight.shadow.camera.far = 300;
-    spotLight.shadow.camera.fov = 20;
+    spotLight.shadow.camera.fov = 10;
     // 聚光光源辅助显示
     var spotLightHelper = new THREE.SpotLightHelper(spotLight);
     scene.add(spotLightHelper);

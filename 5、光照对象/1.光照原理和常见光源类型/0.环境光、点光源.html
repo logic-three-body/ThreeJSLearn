@@ -38,13 +38,17 @@
      */
     //环境光   环境光颜色RGB成分分别和物体材质颜色RGB成分分别相乘
     var ambient = new THREE.AmbientLight(0x444444);
-    scene.add(ambient);//环境光对象添加到scene场景中
+    scene.add(ambient); //环境光对象添加到scene场景中
     //点光源
-    var point = new THREE.PointLight(0xffffff);
+    var point = new THREE.PointLight(0x1e6f5c);
     //设置点光源位置  光源对象和模型对象的position属性一样是Vector3对象
     //PointLight的基类是Light  Light的基类是Object3D  点光源对象继承Object3D对象的位置属性position
-    point.position.set(400, 200, 300);
+    point.position.set(100, 0, 0);
     scene.add(point);
+    var sphereSize = 50;
+    var pointLightHelper = new THREE.PointLightHelper(point, sphereSize, 0x864000);
+    scene.add(pointLightHelper);
+
     /**
      * 相机设置
      */
@@ -71,7 +75,7 @@
     }
     render();
     //创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
-    var controls = new THREE.OrbitControls(camera,renderer.domElement);
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
     //监听鼠标事件，触发渲染函数，更新canvas画布渲染效果
     controls.addEventListener('change', render);
   </script>
