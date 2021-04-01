@@ -93,6 +93,7 @@
       requestAnimationFrame(render);
       renderer.render(scene, camera); //执行渲染操作
       meshSphere.rotateY(0.001 * t); //旋转角速度0.001弧度每毫秒
+      meshSphere.translateX(1);
     }
 
     function render2() {
