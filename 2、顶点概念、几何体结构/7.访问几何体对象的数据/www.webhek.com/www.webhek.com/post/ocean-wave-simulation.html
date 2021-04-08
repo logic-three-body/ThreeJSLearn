@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base href='https://www.webhek.com/apps/ocean-wave-simulation/'>
+    <link rel='preconnect' href='//pagead2.googlesyndication.com' crossorigin>
+    <link rel='preconnect' href='//partner.googleadservices.com' crossorigin>
+    <link rel='preconnect' href='//googleads.g.doubleclick.net' crossorigin>
+    <link rel='preconnect' href='//adservice.google.com' crossorigin>
+    <link rel='preconnect' href='//www.googletagservices.com' crossorigin>
+    <link rel='preconnect' href='//fonts.googleapis.com' crossorigin>
+    <link rel='preconnect' href='//tpc.googlesyndication.com' crossorigin>
+    <link rel='preconnect' href='//fonts.gstatic.com' crossorigin>
+    <link rel='preconnect' href='//cm.g.doubleclick.net' crossorigin>
+    <link rel='preconnect' href='//www.google-analytics.com' crossorigin>
+    <link rel='preconnect' href='//www.gstatic.com' crossorigin>
+    <link rel='preconnect' href='//stats.g.doubleclick.net' crossorigin>
+    <meta charset="utf-8">
+    <title>用浏览器WebGL技术模拟海面风浪三维模型</title>
+    <meta name="Description" content="用浏览器WebGL技术模拟出的不可思议的海面风浪效果，只用简单的js就完全模拟出了专业软件里才会有的三维模型，并且能够手动调整浪高，风向，风力，海面大小。">
+    <link href="waves.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    <h1>用浏览器WebGL技术模拟海面风浪三维模型</h1>
+    <div id="overlay"></div>
+    <div id="ui">
+        <div id="camera">
+            <canvas id="profile" width="350" height="105"></canvas>
+            <div id="length"></div>
+            <div id="end"></div>
+            <div id="wind"> <span id="wind-speed"></span><span id="wind-unit"> m/s</span>
+                <div id="wind-label">风力风向调整</div>
+            </div>
+            <div id="size"> <span id="size-value"></span><span id="size-unit"> m</span> </div>
+            <div id="size-label">面积调整</div>
+            <div id="choppiness"></div>
+            <div id="choppiness-label">浪高调整</div>
+        </div>
+    </div>
+    <canvas id="simulator"></canvas>
+    <div id="error">你的浏览器不支持WebGL，请使用最新版的谷歌浏览器或火狐浏览器，并开启WebGL设置。</div>
+    <script src="waves.js"></script>
+    <!-- JiaThis Button BEGIN -->
+    <script type="text/javascript" src="http://v3.jiathis.com/code/jiathis_r.js?move=0&amp;btn=r5.gif" charset="utf-8"></script>
+    <!-- JiaThis Button END -->
+    <script>
+        (function(i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function() {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o), m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-2477810-34', 'auto');
+        ga('send', 'pageview');
+    </script> <span id='pageendflag'></span> </body>
+
+</html>
+<!--
+Performance optimized by W3 Total Cache. Learn more: https://www.w3-edge.com/products/
+
+Page Caching using disk: enhanced (SSL caching disabled) 
+
+Served from: www.webhek.com @ 2021-01-06 01:49:50 by W3 Total Cache
+-->
+<!-- 2021-1-6 01:49 static gzip-->

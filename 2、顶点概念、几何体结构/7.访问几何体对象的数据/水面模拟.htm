@@ -19,7 +19,7 @@
 
 <body>
     <script>
-        var Rad = Math.PI / 100;
+        var Rad = Math.PI / 180;
         /**
          * 创建场景对象Scene
          */
@@ -33,7 +33,7 @@
         // console.log('三角面数据',geometry.faces);
         var row = 30;
         var col = 30;
-        var geometry = new THREE.PlaneGeometry(100, 100, row, col); //创建一个平面几何对象Geometry
+        var geometry = new THREE.PlaneGeometry(300, 300, row, col); //创建一个平面几何对象Geometry
         geometry.rotateX(-90 * Rad);
         //console.log(geometry);
         //console.log('几何体顶点位置数据', geometry.attributes.position);
@@ -44,7 +44,7 @@
         var material = new THREE.MeshLambertMaterial({
             color: 0x0000ff,
             side: THREE.DoubleSide, //两面可见
-            // wireframe:true,//线框模式渲染
+            wireframe: true, //线框模式渲染
         }); //材质对象Material
         var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
         // 辅助坐标系
@@ -70,7 +70,7 @@
 
         function wave(amplitude, frequency, phase, time, dir) {
 
-            for (var i = 0; i <= row; ++i) {
+            for (var i = 0; i <= row + 1; ++i) {
                 for (var j = 0; j <= col; ++j) {
                     var waterheight = amplitude * Math.sin((dir.x * i + dir.y * j) * frequency + time);
                     geometry.vertices[i * col + j].y = waterheight;
@@ -105,14 +105,14 @@
         }
         //render();
 
-        let T02 = new Date(); //上次时间
+        //let T02 = new Date(); //上次时间
         function render2() {
-            let T12 = new Date(); //本次时间
-            let t = T12 - T02; //时间差
-            T02 = T12; //把本次时间赋值给上次时间
+            //let T12 = new Date(); //本次时间
+            //let t = T12 - T02; //时间差
+           // T02 = T12; //把本次时间赋值给上次时间
             requestAnimationFrame(render2);
             renderer.render(scene, camera); //执行渲染操作
-            wave(amplitude, frequency, phase, t, direct);
+            wave(amplitude, frequency, phase, time+=0.1, direct);
         }
         render2();
         //创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
