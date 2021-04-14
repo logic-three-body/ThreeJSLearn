@@ -41,18 +41,25 @@
         //console.log('几何体索引数据', geometry.index);
         geometry.verticesNeedUpdate = true;
         var textureLoader = new THREE.TextureLoader();
-        var texture = textureLoader.load('grass.jpg'); // 加载纹理贴图
+        var texture = textureLoader.load('water.jpg'); // 加载纹理贴图
+        var texture_norm = textureLoader.load('water_norm1.jpeg'); // 加载法线贴图      
         // 设置阵列
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
         // uv两个方向纹理重复数量
-        texture.repeat.set(10, 10);
+        texture.repeat.set(2, 2);
+        texture_norm.wrapS = THREE.RepeatWrapping;
+        texture_norm.wrapT = THREE.RepeatWrapping;
+        // uv两个方向纹理重复数量
+        //texture_norm.repeat.set(3, 3);
         var material = new THREE.MeshPhongMaterial({
             //color: 0x0000ff,
             side: THREE.DoubleSide, //两面可见
             specular: 0x4488ee,
             shininess: 12,
             map: texture, // 设置纹理贴图
+            normalMap: texture_norm,
+            //normalScale: new THREE.Vector2(1, 1),
             // wireframe: true, //线框模式渲染
         }); //材质对象Material
         var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
@@ -83,6 +90,7 @@
                 for (var j = 0; j <= col; ++j) {
                     var waterheight = amplitude * Math.sin((dir.x * i + dir.y * j) * frequency + time);
                     geometry.vertices[i * col + j].y = waterheight;
+                    //geometry.normals[];
                     // console.log(geometry.vertices);
                 }
             }
@@ -122,6 +130,8 @@
             requestAnimationFrame(render2);
             renderer.render(scene, camera); //执行渲染操作
             wave(amplitude, frequency, phase, time += 0.1, direct);
+            texture.offset.x -= time / 80000;
+            texture.offset.y -= time / 50000;
         }
         render2();
         //创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
