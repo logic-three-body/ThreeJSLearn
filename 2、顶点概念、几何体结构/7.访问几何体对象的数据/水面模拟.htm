@@ -35,10 +35,8 @@
         var col = 30;
         var geometry = new THREE.PlaneGeometry(300, 300, row, col); //创建一个平面几何对象Geometry
         geometry.rotateX(-90 * Rad);
-        //console.log(geometry);
-        //console.log('几何体顶点位置数据', geometry.attributes.position);
-        // console.log('几何体顶点颜色数据',geometry.attributes.color);
-        //console.log('几何体索引数据', geometry.index);
+
+        geometry.name = "water";
         geometry.verticesNeedUpdate = true;
         var textureLoader = new THREE.TextureLoader();
         var texture = textureLoader.load('water.jpg'); // 加载纹理贴图
@@ -53,14 +51,14 @@
         // uv两个方向纹理重复数量
         //texture_norm.repeat.set(3, 3);
         var material = new THREE.MeshPhongMaterial({
-            //color: 0x0000ff,
+            color: 0x0000ff,
             side: THREE.DoubleSide, //两面可见
-            specular: 0x4488ee,
+            // specular: 0x4488ee,
             shininess: 12,
-            map: texture, // 设置纹理贴图
-            normalMap: texture_norm,
-            //normalScale: new THREE.Vector2(1, 1),
-            // wireframe: true, //线框模式渲染
+            // map: texture, // 设置纹理贴图
+            // normalMap: texture_norm,
+            normalScale: new THREE.Vector2(1.5, 1.5),
+            wireframe: true, //线框模式渲染
         }); //材质对象Material
         var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
         // 辅助坐标系
@@ -89,12 +87,19 @@
             for (var i = 0; i <= row + 1; ++i) {
                 for (var j = 0; j <= col; ++j) {
                     var waterheight = amplitude * Math.sin((dir.x * i + dir.y * j) * frequency + time);
-                    geometry.vertices[i * col + j].y = waterheight;
-                    //geometry.normals[];
-                    // console.log(geometry.vertices);
+                    //处理顶点
+                    var p = geometry.vertices[i * col + j];
+                    p.y = waterheight;
+                    geometry.vertices[i * col + j] = p;
+                    //处理法线
+                    var tagentChange = amplitude * Math.cos((dir.x * i + dir.y * j) * frequency + time);
+                    var tagent = new THREE.Vector3(1, tagentChange, 0).normalize();
+                    geometry.faces[Math.round((i * col + j) / 3)].VertexNormals = new THREE.Vector3(-tagent.y, tagent.x,
+                        0);
                 }
             }
             geometry.verticesNeedUpdate = true;
+            geometry.normalsNeedUpdate = true;
         }
 
         /**
@@ -132,6 +137,11 @@
             wave(amplitude, frequency, phase, time += 0.1, direct);
             texture.offset.x -= time / 80000;
             texture.offset.y -= time / 50000;
+            // 设置纹理旋转角度
+            texture.center.set(0, 0);
+            texture.rotation = Math.PI / -time;
+            // 设置纹理的旋转中心，默认(0,0)
+            if (time > 1) time / 10;
         }
         render2();
         //创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
