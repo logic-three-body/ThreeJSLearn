@@ -40,11 +40,20 @@
         // console.log('几何体顶点颜色数据',geometry.attributes.color);
         //console.log('几何体索引数据', geometry.index);
         geometry.verticesNeedUpdate = true;
-
-        var material = new THREE.MeshLambertMaterial({
-            color: 0x0000ff,
+        var textureLoader = new THREE.TextureLoader();
+        var texture = textureLoader.load('grass.jpg'); // 加载纹理贴图
+        // 设置阵列
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        // uv两个方向纹理重复数量
+        texture.repeat.set(10, 10);
+        var material = new THREE.MeshPhongMaterial({
+            //color: 0x0000ff,
             side: THREE.DoubleSide, //两面可见
-            wireframe: true, //线框模式渲染
+            specular: 0x4488ee,
+            shininess: 12,
+            map: texture, // 设置纹理贴图
+            // wireframe: true, //线框模式渲染
         }); //材质对象Material
         var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
         // 辅助坐标系
@@ -109,10 +118,10 @@
         function render2() {
             //let T12 = new Date(); //本次时间
             //let t = T12 - T02; //时间差
-           // T02 = T12; //把本次时间赋值给上次时间
+            // T02 = T12; //把本次时间赋值给上次时间
             requestAnimationFrame(render2);
             renderer.render(scene, camera); //执行渲染操作
-            wave(amplitude, frequency, phase, time+=0.1, direct);
+            wave(amplitude, frequency, phase, time += 0.1, direct);
         }
         render2();
         //创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
