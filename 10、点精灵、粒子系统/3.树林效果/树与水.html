@@ -88,7 +88,10 @@
       map: textureWater, // 设置纹理贴图
       normalMap: textureWater_norm,
       depthTest: false,
-      //normalScale: new THREE.Vector2(1.5, 1.5),
+      normalScale: new THREE.Vector2(1.5, 1.5),
+      transparent: true,
+      // 设置材质透明度
+      opacity: 0.5,
       //wireframe: true, //线框模式渲染
     }); //材质对象Material 
     var meshWater = new THREE.Mesh(geometryWater, materialWater); //网格模型对象Mesh;
