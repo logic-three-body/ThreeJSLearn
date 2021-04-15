@@ -27,8 +27,28 @@
       创建一条河流
     */
     var geometryWater = new THREE.PlaneBufferGeometry(100, 1000); //矩形平面
-
-
+    //加载水的纹理贴图
+    var textureLoader = new THREE.TextureLoader();
+    var textureWater = textureLoader.load('water.jpg'); // 加载纹理贴图
+    var textureWater_norm = textureLoader.load('water_norm1.jpeg'); // 加载法线贴图   
+    // 设置纹理的重复模式
+    textureWater.wrapS = THREE.RepeatWrapping;
+    textureWater.wrapT = THREE.RepeatWrapping;
+    textureWater_norm.wrapS = THREE.RepeatWrapping;
+    textureWater_norm.wrapT = THREE.RepeatWrapping;
+    var materialWater = new THREE.MeshPhongMaterial({
+      // color: 0x0000ff,
+      side: THREE.DoubleSide, //两面可见
+      specular: 0x4488ee,
+      shininess: 12,
+      map: textureWater, // 设置纹理贴图
+      normalMap: textureWater_norm,
+      //depthTest: false,
+      //normalScale: new THREE.Vector2(1.5, 1.5),
+      //wireframe: true, //线框模式渲染
+    }); //材质对象Material 
+    var meshWater = new THREE.Mesh(geometryWater, materialWater); //网格模型对象Mesh;
+    scene.add(meshWater);
     /**
      * 创建一个草地地面
      */
@@ -99,8 +119,16 @@
     renderer.setClearColor(0xb9d3ff, 1); //设置背景颜色
     document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
 
+    //水面流动函数
+    function flow(time) {
+      textureWater.offset.y += time / 1000;
+    }
+
     // 渲染函数
+    time = 0;
+
     function render() {
+      flow(time += 0.01);
       renderer.render(scene, camera); //执行渲染操作
       requestAnimationFrame(render); //请求再次执行渲染函数render，渲染下一帧
     }
