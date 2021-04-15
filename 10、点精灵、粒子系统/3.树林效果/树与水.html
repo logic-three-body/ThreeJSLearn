@@ -23,32 +23,7 @@
      * 创建场景对象Scene
      */
     var scene = new THREE.Scene();
-    /*
-      创建一条河流
-    */
-    var geometryWater = new THREE.PlaneBufferGeometry(100, 1000); //矩形平面
-    //加载水的纹理贴图
-    var textureLoader = new THREE.TextureLoader();
-    var textureWater = textureLoader.load('water.jpg'); // 加载纹理贴图
-    var textureWater_norm = textureLoader.load('water_norm1.jpeg'); // 加载法线贴图   
-    // 设置纹理的重复模式
-    textureWater.wrapS = THREE.RepeatWrapping;
-    textureWater.wrapT = THREE.RepeatWrapping;
-    textureWater_norm.wrapS = THREE.RepeatWrapping;
-    textureWater_norm.wrapT = THREE.RepeatWrapping;
-    var materialWater = new THREE.MeshPhongMaterial({
-      // color: 0x0000ff,
-      side: THREE.DoubleSide, //两面可见
-      specular: 0x4488ee,
-      shininess: 12,
-      map: textureWater, // 设置纹理贴图
-      normalMap: textureWater_norm,
-      //depthTest: false,
-      //normalScale: new THREE.Vector2(1.5, 1.5),
-      //wireframe: true, //线框模式渲染
-    }); //材质对象Material 
-    var meshWater = new THREE.Mesh(geometryWater, materialWater); //网格模型对象Mesh;
-    scene.add(meshWater);
+
     /**
      * 创建一个草地地面
      */
@@ -60,11 +35,12 @@
     textureGrass.wrapT = THREE.RepeatWrapping;
     // uv两个方向纹理重复数量
     textureGrass.repeat.set(10, 10);
-    var material = new THREE.MeshLambertMaterial({
+    var materialGrass = new THREE.MeshLambertMaterial({
       color: 0x777700,
       map: textureGrass,
+      // depthTest: false,
     });
-    var meshGrass = new THREE.Mesh(geometryGrass, material); //网格模型对象Mesh
+    var meshGrass = new THREE.Mesh(geometryGrass, materialGrass); //网格模型对象Mesh
     scene.add(meshGrass); //网格模型添加到场景中
     meshGrass.rotateX(-Math.PI / 2);
     /**
@@ -88,6 +64,35 @@
       // 设置精灵模型位置，在xoz平面上随机分布
       spriteTree.position.set(1000 * k1, 50, 1000 * k2)
     }
+
+    /*
+      创建一条河流
+    */
+    var geometryWater = new THREE.PlaneBufferGeometry(100, 1000); //矩形平面
+    //加载水的纹理贴图
+    var textureLoader = new THREE.TextureLoader();
+    var textureWater = textureLoader.load('water.jpg'); // 加载纹理贴图
+    var textureWater_norm = textureLoader.load('water_norm1.jpeg'); // 加载法线贴图   
+    // 设置纹理的重复模式
+    textureWater.wrapS = THREE.RepeatWrapping;
+    textureWater.wrapT = THREE.RepeatWrapping;
+    textureWater_norm.wrapS = THREE.RepeatWrapping;
+    textureWater_norm.wrapT = THREE.RepeatWrapping;
+    var materialWater = new THREE.MeshPhongMaterial({
+      // color: 0x0000ff,
+      side: THREE.DoubleSide, //两面可见
+      specular: 0x4488ee,
+      shininess: 12,
+      map: textureWater, // 设置纹理贴图
+      normalMap: textureWater_norm,
+      depthTest: false,
+      //normalScale: new THREE.Vector2(1.5, 1.5),
+      //wireframe: true, //线框模式渲染
+    }); //材质对象Material 
+    var meshWater = new THREE.Mesh(geometryWater, materialWater); //网格模型对象Mesh;
+    geometryWater.rotateX(-Math.PI / 2);
+    //geometryWater.translateY(100);
+    scene.add(meshWater);
     // 坐标系辅助显示
     var axesHelper = new THREE.AxesHelper(200);
     scene.add(axesHelper);
@@ -121,14 +126,17 @@
 
     //水面流动函数
     function flow(time) {
-      textureWater.offset.y += time / 1000;
+      textureWater.offset.y += time / 8000;
     }
 
     // 渲染函数
     time = 0;
-
+    let T0 = new Date(); //上次时间
     function render() {
-      flow(time += 0.01);
+      let T1 = new Date(); //本次时间
+      let time = T1 - T0; //时间差
+      flow(time);
+      T0 = T1; //把本次时间赋值给上次时间
       renderer.render(scene, camera); //执行渲染操作
       requestAnimationFrame(render); //请求再次执行渲染函数render，渲染下一帧
     }
