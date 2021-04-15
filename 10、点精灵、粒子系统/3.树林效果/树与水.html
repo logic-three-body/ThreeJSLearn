@@ -123,6 +123,34 @@
       spriteDrop.position.set(1000 * k1, 300 * Math.random(), 1000 * k2)
     }
     scene.add(groupRain); //雨滴群组插入场景中
+
+    /*
+    添加天空盒
+    */
+    var Skybox = new THREE.SphereGeometry(500, 50, 50);
+    var materialSkybox = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      side: THREE.BackSide,
+    });
+    var meshSkybox = new THREE.Mesh(Skybox, materialSkybox);
+    scene.add(meshSkybox);
+    var textureLoader = new THREE.TextureLoader();
+    var texture = textureLoader.load('00125.jpg');
+    meshSkybox.material.map = texture;
+
+    /*
+    添加音频源
+    */
+    var listener = new THREE.AudioListener();
+    var audio = new THREE.Audio(listener);
+    var audioLoader = new THREE.AudioLoader();
+    audioLoader.load('Taki.mp3', function (AudioBuffer) {
+      audio.setBuffer(AudioBuffer);
+      audio.setLoop(true);
+      audio.setVolume(0.3);
+      audio.play()
+    });
+
     /**
      * 光源设置
      */
@@ -148,7 +176,7 @@
      */
     var renderer = new THREE.WebGLRenderer();
     renderer.setSize(width, height); //设置渲染区域尺寸
-    renderer.setClearColor(0xb9d3ff, 1); //设置背景颜色
+    renderer.setClearColor(0xff8303, 1); //设置背景颜色
     document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
 
     //水面流动函数
