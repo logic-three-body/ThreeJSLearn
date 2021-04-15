@@ -116,7 +116,7 @@
       var spriteDrop = new THREE.Sprite(spriteRainMaterial);
       groupRain.add(spriteDrop);
       // 控制精灵大小,
-      spriteDrop.scale.set(8, 10, 1); //// 只需要设置x、y两个分量就可以
+      spriteDrop.scale.set(4, 5, 1); //// 只需要设置x、y两个分量就可以
       var k1 = Math.random() - 0.5;
       var k2 = Math.random() - 0.5;
       // 设置精灵模型位置，在空间中随机分布
@@ -156,6 +156,19 @@
       textureWater.offset.y += time / 6000;
     }
 
+    //下雨效果函数
+    function rain() {
+      // 每次渲染遍历雨滴群组，刷新频率30~60FPS，两帧时间间隔16.67ms~33.33ms
+      // 每次渲染都会更新雨滴的位置，进而产生动画效果
+      groupRain.children.forEach(sprite => {
+        // 雨滴的y坐标每次减2
+        sprite.position.y -= 2;
+        if (sprite.position.y < 0) {
+          // 如果雨滴落到地面，重置y，从新下落
+          sprite.position.y = 300;
+        }
+      });
+    }
     // 渲染函数
     time = 0;
     let T0 = new Date(); //上次时间
@@ -163,6 +176,7 @@
       let T1 = new Date(); //本次时间
       let time = T1 - T0; //时间差
       flow(time);
+      rain();
       T0 = T1; //把本次时间赋值给上次时间
       renderer.render(scene, camera); //执行渲染操作
       requestAnimationFrame(render); //请求再次执行渲染函数render，渲染下一帧
