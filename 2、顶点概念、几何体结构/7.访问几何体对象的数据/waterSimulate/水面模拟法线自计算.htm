@@ -27,10 +27,6 @@
         /**
          * 创建网格模型
          */
-        // var geometry = new THREE.BoxGeometry(100, 100, 100); //创建一个立方体几何对象Geometry
-        // console.log(geometry);
-        // console.log('几何体顶点位置数据',geometry.vertices);
-        // console.log('三角面数据',geometry.faces);
         var row = 10;
         var col = 10;
         var geometry = new THREE.PlaneGeometry(300, 300, row, col); //创建一个平面几何对象Geometry
@@ -38,27 +34,13 @@
 
         geometry.name = "water";
         geometry.verticesNeedUpdate = true;
-        var textureLoader = new THREE.TextureLoader();
-        var texture = textureLoader.load('water.jpg'); // 加载纹理贴图
-        var texture_norm = textureLoader.load('water_norm1.jpeg'); // 加载法线贴图      
-        // 设置阵列
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        // uv两个方向纹理重复数量
-        texture.repeat.set(2, 2);
-        texture_norm.wrapS = THREE.RepeatWrapping;
-        texture_norm.wrapT = THREE.RepeatWrapping;
+
         // uv两个方向纹理重复数量
         //texture_norm.repeat.set(3, 3);
         var material = new THREE.MeshPhongMaterial({
             // color: 0x0000ff,
             side: THREE.DoubleSide, //两面可见
-            //specular: 0x4488ee,
             shininess: 12,
-            //map: texture, // 设置纹理贴图
-            //normalMap: texture_norm,
-            //normalScale: new THREE.Vector2(1.5, 1.5),
-            // wireframe: true, //线框模式渲染
         }); //材质对象Material
         var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
         var helper = new THREE.VertexNormalsHelper(mesh, 20, 0x00ff00, 1);
@@ -85,7 +67,6 @@
         var direct = new THREE.Vector2(1, 1);
 
         function wave(amplitude, frequency, phase, time, dir) {
-
             for (var i = 0; i <= row + 1; ++i) {
                 for (var j = 0; j <= col; ++j) {
                     var waterheight = amplitude * Math.sin((dir.x * i + dir.y * j) * frequency + time);
@@ -93,21 +74,21 @@
                     var p = geometry.vertices[i * col + j];
                     p.y = waterheight;
                     geometry.vertices[i * col + j] = p;
-
-                    //console.log(p);
                     //处理法线
                     // geometry.computeFlatVertexNormals();
-                    geometry.computeVertexNormals(false);
-                    // geometry.computeFaceNormals();
-                    geometry.normalsNeedUpdate = true;
-
+                    //geometry.computeVertexNormals(false);
+                    //切线法求法线失败了
                     //var tagentChange = amplitude * Math.cos((dir.x * i + dir.y * j) * frequency + time);
                     //var tagent = new THREE.Vector3(1, tagentChange, 0).normalize();
                     //geometry.faces[i * col + j].VertexNormals = new THREE.Vector3(-tagent.y, tagent.x,
                     //0);
+
                 }
             }
             geometry.verticesNeedUpdate = true;
+            //循环内部调用效率低
+            geometry.computeVertexNormals(false);
+            // geometry.computeFaceNormals();
             //geometry.normalsNeedUpdate = true;
         }
 
@@ -142,19 +123,18 @@
 
                 //处理法线
                 for (var v = 0; v < geometry.faces[i].vertexNormals.length; ++v) {
-                    geometry.faces[i].vertexNormals[v].copy(cb.normalize());
+                    geometry.faces[i].vertexNormals[v].copy(cb.normalize()); //使用=不行，需要调用copy传递属性
                     geometry.normalsNeedUpdate = true;
                 }
 
 
+                //切线法求法线失败了
                 // var tagentChange1 = i * amplitude * Math.cos((vA.x * i) * frequency + time);
                 // var tagent1 = new THREE.Vector3(1, tagentChange1, 0).normalize();
                 // var tagentChange2 = i * amplitude * Math.cos((vB.x * i) * frequency + time);
                 // var tagent2 = new THREE.Vector3(1, tagentChange2, 0).normalize();
                 // var tagentChange3 = i * amplitude * Math.cos((vC.x * i) * frequency + time);
                 // var tagent3 = new THREE.Vector3(1, tagentChange3, 0).normalize();
-
-
                 //处理顶点法向量
                 // geometry.faces[i].vertexNormals[0] = new THREE.Vector3(-tagent1.y, tagent1.x, 0);
                 // geometry.normalsNeedUpdate = true;
@@ -162,15 +142,38 @@
                 // geometry.normalsNeedUpdate = true;
                 // geometry.faces[i].vertexNormals[2] = new THREE.Vector3(-tagent3.y, tagent3.x, 0);
                 // geometry.normalsNeedUpdate = true;
+            }
+        }
 
+        //自计算法线
+        function wave3(amplitude, frequency, phase, time, dir) {
+            for (var i = 0; i < geometry.faces.length; ++i) {
+                //变量三角面三个顶点
+                var Vernum1 = geometry.faces[i].a;
+                var Vernum2 = geometry.faces[i].b;
+                var Vernum3 = geometry.faces[i].c;
+
+                var vA = geometry.vertices[Vernum1];
+                var vB = geometry.vertices[Vernum2];
+                var vC = geometry.vertices[Vernum3];
+
+                //处理顶点
+                var waterheight1 = amplitude * Math.sin((vA.x * i) * frequency + time);
+                var waterheight2 = amplitude * Math.sin((vB.x * i) * frequency + time);
+                var waterheight3 = amplitude * Math.sin((vC.x * i) * frequency + time);
+
+                vA.y = waterheight1;
+                vB.y = waterheight2;
+                vC.y = waterheight3;
+                geometry.verticesNeedUpdate = true;
+
+                //处理法线 循环内调用api效率低
                 //geometry.computeVertexNormals(true);
 
             }
-            //geometry.computeVertexNormals(false);
+            geometry.computeVertexNormals(false);
 
         }
-
-
 
         /**
          * 相机设置
@@ -192,25 +195,10 @@
         document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
 
         // 渲染函数
-        function render() {
-            renderer.render(scene, camera); //执行渲染操作
-        }
-        //render();
-
-        //let T02 = new Date(); //上次时间
         function render2() {
-            //let T12 = new Date(); //本次时间
-            //let t = T12 - T02; //时间差
-            // T02 = T12; //把本次时间赋值给上次时间
+            wave2(amplitude, frequency, phase, time += 0.1, direct);
             requestAnimationFrame(render2);
             renderer.render(scene, camera); //执行渲染操作
-            wave2(amplitude, frequency, phase, time += 0.1, direct);
-            texture.offset.x -= time / 8000;
-            texture.offset.y += time / 5000;
-            // // 设置纹理旋转角度
-            texture.rotation.x = Math.PI / -time;
-            // 设置纹理的旋转中心，默认(0,0)
-            if (time > 1) time / 10;
         }
         render2();
         //创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
