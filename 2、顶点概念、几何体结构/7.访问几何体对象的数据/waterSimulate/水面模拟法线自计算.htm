@@ -58,7 +58,7 @@
             map: texture, // 设置纹理贴图
             normalMap: texture_norm,
             normalScale: new THREE.Vector2(1.5, 1.5),
-           // wireframe: true, //线框模式渲染
+            // wireframe: true, //线框模式渲染
         }); //材质对象Material
         var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
         var helper = new THREE.VertexNormalsHelper(mesh, 20, 0x00ff00, 1);
@@ -110,6 +110,31 @@
             //geometry.normalsNeedUpdate = true;
         }
 
+        //自计算法线
+        function wave2(amplitude, frequency, phase, time, dir) {
+            for (var i = 0; i < geometry.faces.length; ++i) {
+                //处理顶点
+                var waterheight = amplitude * Math.sin((dir.x * i + dir.y * j) * frequency + time);
+                //处理法线
+                var tagentChange = amplitude * Math.cos((dir.x * i + dir.y * j) * frequency + time);
+                var tagent = new THREE.Vector3(1, tagentChange, 0).normalize();
+                //变量三角面三个顶点
+                var Vernum1 = geometry.faces[i].a;
+                var Vernum2 = geometry.faces[i].b;
+                var Vernum3 = geometry.faces[i].c;
+                geometry.vertices[Vernum1].y = waterheight;
+                geometry.vertices[Vernum2].y = waterheight;
+                geometry.vertices[Vernum3].y = waterheight;
+                geometry.verticesNeedUpdate = true;
+                //处理顶点法向量
+                for (var j = 0; j < geometry.faces[i].length; ++j) {
+                    geometry.faces[i].vertexNormals[j] == new THREE.Vector3(-tagent.y, tagent.x,
+                        0);
+                    geometry.normalsNeedUpdate = true;
+
+                }
+            }
+        }
         /**
          * 相机设置
          */
@@ -142,7 +167,7 @@
             // T02 = T12; //把本次时间赋值给上次时间
             requestAnimationFrame(render2);
             renderer.render(scene, camera); //执行渲染操作
-            wave(amplitude, frequency, phase, time += 0.1, direct);
+            wave2(amplitude, frequency, phase, time += 0.1, direct);
             texture.offset.x -= time / 8000;
             texture.offset.y += time / 5000;
             // // 设置纹理旋转角度
