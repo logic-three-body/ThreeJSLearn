@@ -24,13 +24,13 @@
 
 
     <script src="JS/three.js"></script>
-
     <script src="JS/Projector.js"></script>
     <script src="JS/CanvasRenderer.js"></script>
 
     <script>
         var camera, scene, renderer;
 
+        //实现天空盒的变量
         var Skybox_texture_placeholder,
             isUserInteracting = false,
             onMouseDownMouseX = 0,
@@ -43,10 +43,10 @@
             Skybox_theta = 0,//计算角度
             Skybox_target = new THREE.Vector3();
 
-        init();
+        Skybox_init();
         animate();
 
-        function init() {
+        function Skybox_init() {
 
             var container, Skybox_mesh;
 
