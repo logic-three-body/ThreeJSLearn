@@ -151,9 +151,11 @@
                 // geometry.faces[i].vertexNormals[2] = new THREE.Vector3(-tagent3.y, tagent3.x, 0);
                 // geometry.normalsNeedUpdate = true;
 
-                geometry.computeVertexNormals(true);
+                //geometry.computeVertexNormals(true);
 
             }
+            geometry.computeVertexNormals(false);
+
         }
 
 
