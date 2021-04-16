@@ -119,28 +119,40 @@
                 var Vernum2 = geometry.faces[i].b;
                 var Vernum3 = geometry.faces[i].c;
 
-                var v1 = geometry.vertices[Vernum1];
-                var v2 = geometry.vertices[Vernum2];
-                var v3 = geometry.vertices[Vernum3];
+                var vA = geometry.vertices[Vernum1];
+                var vB = geometry.vertices[Vernum2];
+                var vC = geometry.vertices[Vernum3];
 
+                var cb = new THREE.Vector3(),
+                    ab = new THREE.Vector3();
+
+                cb.subVectors(vC, vB);
+                ab.subVectors(vA, vB);
+                cb.cross(ab);
 
                 //处理顶点
-                var waterheight1 = amplitude * Math.sin((v1.x * i) * frequency + time);
-                var waterheight2 = amplitude * Math.sin((v2.x * i) * frequency + time);
-                var waterheight3 = amplitude * Math.sin((v3.x * i) * frequency + time);
+                var waterheight1 = amplitude * Math.sin((vA.x * i) * frequency + time);
+                var waterheight2 = amplitude * Math.sin((vB.x * i) * frequency + time);
+                var waterheight3 = amplitude * Math.sin((vC.x * i) * frequency + time);
 
-                v1.y = waterheight1;
-                v2.y = waterheight2;
-                v3.y = waterheight3;
+                vA.y = waterheight1;
+                vB.y = waterheight2;
+                vC.y = waterheight3;
                 geometry.verticesNeedUpdate = true;
 
                 //处理法线
-                var tagentChange1 = i * amplitude * Math.cos((v1.x * i) * frequency + time);
-                var tagent1 = new THREE.Vector3(1, tagentChange1, 0).normalize();
-                var tagentChange2 = i * amplitude * Math.cos((v2.x * i) * frequency + time);
-                var tagent2 = new THREE.Vector3(1, tagentChange2, 0).normalize();
-                var tagentChange3 = i * amplitude * Math.cos((v3.x * i) * frequency + time);
-                var tagent3 = new THREE.Vector3(1, tagentChange3, 0).normalize();
+                for (var v = 0; v < geometry.faces[i].vertexNormals.length; ++v) {
+                    geometry.faces[i].vertexNormals[v].copy(cb.normalize());
+                    geometry.normalsNeedUpdate = true;
+                }
+
+
+                // var tagentChange1 = i * amplitude * Math.cos((vA.x * i) * frequency + time);
+                // var tagent1 = new THREE.Vector3(1, tagentChange1, 0).normalize();
+                // var tagentChange2 = i * amplitude * Math.cos((vB.x * i) * frequency + time);
+                // var tagent2 = new THREE.Vector3(1, tagentChange2, 0).normalize();
+                // var tagentChange3 = i * amplitude * Math.cos((vC.x * i) * frequency + time);
+                // var tagent3 = new THREE.Vector3(1, tagentChange3, 0).normalize();
 
 
                 //处理顶点法向量
@@ -154,7 +166,7 @@
                 //geometry.computeVertexNormals(true);
 
             }
-            geometry.computeVertexNormals(false);
+            //geometry.computeVertexNormals(false);
 
         }
 
