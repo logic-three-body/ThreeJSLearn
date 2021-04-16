@@ -53,11 +53,11 @@
         var material = new THREE.MeshPhongMaterial({
             // color: 0x0000ff,
             side: THREE.DoubleSide, //两面可见
-            specular: 0x4488ee,
+            //specular: 0x4488ee,
             shininess: 12,
-            map: texture, // 设置纹理贴图
-            normalMap: texture_norm,
-            normalScale: new THREE.Vector2(1.5, 1.5),
+            //map: texture, // 设置纹理贴图
+            //normalMap: texture_norm,
+            //normalScale: new THREE.Vector2(1.5, 1.5),
             // wireframe: true, //线框模式渲染
         }); //材质对象Material
         var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
@@ -128,13 +128,14 @@
                 geometry.verticesNeedUpdate = true;
                 //处理顶点法向量
                 for (var j = 0; j < geometry.faces[i].length; ++j) {
-                    geometry.faces[i].vertexNormals[j] == new THREE.Vector3(-tagent.y, tagent.x,
+                    geometry.faces[i].vertexNormals[j] = new THREE.Vector3(-tagent.y, tagent.x,
                         0);
                     geometry.normalsNeedUpdate = true;
 
                 }
             }
         }
+
         /**
          * 相机设置
          */

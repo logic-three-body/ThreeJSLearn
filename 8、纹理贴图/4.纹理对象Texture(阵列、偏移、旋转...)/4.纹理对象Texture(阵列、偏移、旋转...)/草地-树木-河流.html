@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>源码对应电子书:百度"three.js 郭隆邦"</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      /* 隐藏body窗口区域滚动条 */
+    }
+  </style>
+  <!--引入three.js三维引擎-->
+  <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/build/three.js"></script>
+  <!-- 引入threejs扩展控件OrbitControls.js -->
+  <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/examples/js/controls/OrbitControls.js"></script>
+  <!-- <script src="D:\MyCourses\课件\网页动画制作\three.js-R125\examples\js\loaders\TGALoader.js"></script> -->
+  <script src="TGALoader.js"></script>
+</head>
+
+<body>
+  <script>
+    /**
+     * 创建场景对象Scene
+     */
+    var scene = new THREE.Scene();
+    /**
+     * 创建一个地面
+     */
+    var groundGeometry = new THREE.PlaneBufferGeometry(1000, 1000, 1, 1);
+    // 加载树纹理贴图
+    var grassTexture = new THREE.TextureLoader().load("grass.jpg");
+    // 设置阵列
+    grassTexture.wrapS = THREE.RepeatWrapping;
+    grassTexture.wrapT = THREE.RepeatWrapping;
+    // uv两个方向纹理重复数量
+    grassTexture.repeat.set(10, 10);
+    var groundMaterial = new THREE.MeshLambertMaterial({
+      map: grassTexture,
+    });
+    var groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+    scene.add(groundMesh);
+    groundMesh.rotateX(-Math.PI / 2);
+
+    //****************************************************
+    var waterGeometry = new THREE.PlaneBufferGeometry(100, 1000, 1, 1);
+    // 加载树纹理贴图
+    var waterTexture = new THREE.TextureLoader().load("water2.png");
+    // 设置阵列
+    waterTexture.wrapS = THREE.RepeatWrapping;
+    waterTexture.wrapT = THREE.RepeatWrapping;
+    // uv两个方向纹理重复数量
+    waterTexture.repeat.set(1, 10);
+    var waterMaterial = new THREE.MeshLambertMaterial({
+      map: waterTexture,
+      depthTest: false,
+      transparent: true,
+      opacity: 0.6,
+    });
+    var waterMesh = new THREE.Mesh(waterGeometry, waterMaterial);
+    scene.add(waterMesh);
+    waterMesh.rotateX(-Math.PI / 2);
+    waterMesh.translateX(-100);
+    //****************************************************
+    var treeGeometry = new THREE.PlaneBufferGeometry(150, 150, 1, 1);
+    // 加载树纹理贴图
+    let loader = new THREE.TGALoader();
+    let treeTexture = loader.load("tree.tga");
+    // var treeTexture = new THREE.TextureLoader().load("run.jpg");
+    // 设置阵列
+    treeTexture.wrapS = THREE.RepeatWrapping;
+    treeTexture.wrapT = THREE.RepeatWrapping;
+    treeTexture.repeat.set(1, 1);
+    treeTexture.format = THREE.RGBAFormat;
+    treeTexture.premultiplyAlpha = true;
+
+    var treeMaterial = new THREE.MeshLambertMaterial({
+      map: treeTexture,
+      side: THREE.DoubleSide,
+      // depthTest: false,
+      //transparent: true,//可开关透明通道
+      // opacity:0.6,
+    });
+    var treeMesh = new THREE.Mesh(treeGeometry, treeMaterial);
+    var treeAxes = new THREE.AxesHelper(100);
+    treeMesh.add(treeAxes);
+    scene.add(treeMesh);
+    // treeMesh.rotateX(-Math.PI / 2);
+    let treePosition = new THREE.Vector3(50, 75, 0);
+    treeMesh.position.set(treePosition.x, treePosition.y, treePosition.z);
+
+    // var textLoader = new THREE.FontLoader();
+    // textLoader.load( 'helvetiker_regular.typeface.json', function ( font ) {
+    // 	var geometry = new THREE.TextBufferGeometry( 'Hello three.js!', {
+    // 		font: font,
+    // 		size: 10,
+    // 		height: 5,
+    // 		curveSegments: 2,
+    // 		// bevelEnabled: true,
+    // 		bevelThickness: 1,
+    // 		// bevelSize: 8,
+    // 		// bevelSegments: 5
+    // 	} );
+    //   var material = new THREE.MeshLambertMaterial({
+    //             color: 0xffe502,
+    //         });
+    //   var textObj = new THREE.Mesh(geometry, material);
+    //   // textObj.text = "aaa";
+    //
+    //   scene.add(textObj);
+    // } );
+
+    /**
+     * 光源设置
+     */
+    //点光源
+    var point = new THREE.PointLight(0xffffff);
+    point.position.set(400, 200, 300); //点光源位置
+    scene.add(point); //点光源添加到场景中
+    //环境光
+    var ambient = new THREE.AmbientLight(0x888888);
+    scene.add(ambient);
+    /**
+     * 透视投影相机设置
+     */
+    var width = window.innerWidth; //窗口宽度
+    var height = window.innerHeight; //窗口高度
+    /**透视投影相机对象*/
+    var camera = new THREE.PerspectiveCamera(60, width / height, 1, 3000);
+    camera.position.set(0, 300, 200); //设置相机位置
+    // camera.position.set(-40, 40, 830); //设置相机位置
+    camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
+    /**
+     * 创建渲染器对象
+     */
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(width, height); //设置渲染区域尺寸
+    renderer.setClearColor(0xb9d3ff, 1); //设置背景颜色
+    document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
+
+    // 渲染函数
+    let cameraWorldDir = new THREE.Vector3();
+    let world_x = new THREE.Vector3(1, 0, 0);
+    let world_y = new THREE.Vector3(0, 1, 0);
+    let world_z = new THREE.Vector3(0, 0, 1);
+    let billboard_x = new THREE.Vector3();
+    let billboard_z = new THREE.Vector3(); //其实是billboard的normal
+    let angle_billX_worldX, angle_billX_worldZ;
+
+    function render() {
+      renderer.render(scene, camera); //执行渲染操作
+      requestAnimationFrame(render);
+      waterTexture.offset.y -= -0.01;
+      treeMesh.rotation.y = computerTreeAngle();
+
+      // document.write(billboardAngle_x);
+    }
+    render();
+    //创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
+    //监听鼠标事件，触发渲染函数，更新canvas画布渲染效果
+    // controls.addEventListener('change', render);
+
+    //*******函数定义***********************************
+
+    function computerTreeAngle() {
+      camera.getWorldDirection(cameraWorldDir);
+      billboard_x.crossVectors(cameraWorldDir, world_y);
+      billboard_x.normalize();
+      billboard_z.crossVectors(billboard_x, world_y); //billboard的z方向，也就是billboard的法向。
+
+      angle_billX_worldX = billboard_x.dot(world_x); //当前billboard的x方向与（1,0,0）夹角的cos
+      angle_billX_worldZ = billboard_x.dot(world_z); //当前billboard的法向与（0,0,1）夹角的cos
+      // console.log("cameraDir", cameraWorldDir);
+      // console.log("billboard_x", billboard_x);
+      // console.log("angle_billX_worldX", angle_billX_worldX);
+      // console.log("angle_billX_worldZ", angle_billX_worldZ);
+
+      if (angle_billX_worldZ >= 0) {
+        angle_billX_worldX = -Math.acos(angle_billX_worldX);
+      } else {
+        angle_billX_worldX = Math.acos(angle_billX_worldX);
+      }
+      // console.log("angle_billX_worldX--", angle_billX_worldX);
+
+      return angle_billX_worldX;
+    }
+  </script>
+
+</body>
+
+</html>
