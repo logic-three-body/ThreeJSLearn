@@ -61,6 +61,8 @@
             //wireframe: true, //线框模式渲染
         }); //材质对象Material
         var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+        var helper = new THREE.VertexNormalsHelper(mesh, 20, 0x00ff00, 1);
+        scene.add(helper);
         // 辅助坐标系
         var axisHelper = new THREE.AxesHelper(250); //红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴
         scene.add(axisHelper);
@@ -95,7 +97,7 @@
 
                     //处理法线
                     //geometry.computeFlatVertexNormals();
-                    geometry.computeVertexNormals(true);
+                    geometry.computeVertexNormals(false);
                     geometry.normalsNeedUpdate = true;
 
                     //var tagentChange = amplitude * Math.cos((dir.x * i + dir.y * j) * frequency + time);
