@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>three.js canvas - panorama fisheye demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            background-color: rgb(200, 200, 200);
+            margin: 0px;
+            overflow: hidden;
+        }
+
+        a {
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="container"></div>
+
+
+    <script src="JS/three.js"></script>
+
+    <script src="JS/Projector.js"></script>
+    <script src="JS/CanvasRenderer.js"></script>
+
+    <script>
+        var camera, scene, renderer;
+
+        var Skybox_texture_placeholder,
+            isUserInteracting = false,
+            onMouseDownMouseX = 0,
+            onMouseDownMouseY = 0,
+            Skybox_lon = 90,//经度
+            onMouseDownLon = 0,
+            Skybox_lat = 0,//维度
+            onMouseDownLat = 0,
+            Skybox_phi = 0,
+            Skybox_theta = 0,//计算角度
+            Skybox_target = new THREE.Vector3();
+
+        init();
+        animate();
+
+        function init() {
+
+            var container, Skybox_mesh;
+
+            container = document.getElementById('container');
+
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
+
+            scene = new THREE.Scene();
+
+            Skybox_texture_placeholder = document.createElement('canvas');
+            Skybox_texture_placeholder.width = 128;
+            Skybox_texture_placeholder.height = 128;
+
+
+            var Skybox_materials = [
+
+                loadTexture('Texture/cube/skybox/px.jpg'), // right
+                loadTexture('Texture/cube/skybox/nx.jpg'), // left
+                loadTexture('Texture/cube/skybox/py.jpg'), // top
+                loadTexture('Texture/cube/skybox/ny.jpg'), // bottom
+                loadTexture('Texture/cube/skybox/pz.jpg'), // back
+                loadTexture('Texture/cube/skybox/nz.jpg') // front
+
+            ];
+
+            var Skybox_geometry = new THREE.BoxGeometry(300, 300, 300, 7, 7, 7);
+            Skybox_geometry.scale(-1, -1, -1); //通过反向缩放可以
+
+            Skybox_mesh = new THREE.Mesh(Skybox_geometry, Skybox_materials);
+            scene.add(Skybox_mesh);
+
+            //调节天空盒网格顶点以缩放到合适角度
+            for (var i = 0, l = Skybox_mesh.geometry.vertices.length; i < l; i++) {
+
+                var vertex = Skybox_mesh.geometry.vertices[i];
+
+                vertex.normalize();
+                vertex.multiplyScalar(550); //顶点坐标缩放
+
+            }
+
+            renderer = new THREE.CanvasRenderer();
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            document.addEventListener('mousedown', onDocumentMouseDown, false);
+            document.addEventListener('mousemove', onDocumentMouseMove, false);
+            document.addEventListener('mouseup', onDocumentMouseUp, false);
+            document.addEventListener('wheel', onDocumentMouseWheel, false);
+
+            document.addEventListener('touchstart', onDocumentTouchStart, false);
+            document.addEventListener('touchmove', onDocumentTouchMove, false);
+
+            //
+
+            window.addEventListener('resize', onWindowResize, false);
+
+        }
+
+        function onWindowResize() {
+
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+        }
+
+        function loadTexture(path) {
+
+            var texture = new THREE.Texture(Skybox_texture_placeholder);
+            var material = new THREE.MeshBasicMaterial({
+                map: texture,
+                overdraw: 1.8, //过度描绘  值越大 材质让模型棱角越分明 ，三角面更明显 ->15.5 棱角分明 ->0 显现边框wireframe
+            });
+
+            var image = new Image();
+            image.onload = function () {
+
+                texture.image = this;
+                texture.needsUpdate = true;
+
+            };
+            image.src = path;
+
+            return material;
+
+        }
+
+        function onDocumentMouseDown(event) {
+
+            event.preventDefault();
+
+            isUserInteracting = true;
+
+            onPointerDownPointerX = event.clientX;
+            onPointerDownPointerY = event.clientY;
+
+            onPointerDownLon = Skybox_lon;
+            onPointerDownLat = Skybox_lat;
+
+        }
+
+        function onDocumentMouseMove(event) {
+
+            if (isUserInteracting === true) {
+
+                Skybox_lon = (onPointerDownPointerX - event.clientX) * 0.1 + onPointerDownLon;
+                Skybox_lat = (event.clientY - onPointerDownPointerY) * 0.1 + onPointerDownLat;
+
+            }
+        }
+
+        function onDocumentMouseUp(event) {
+
+            isUserInteracting = false;
+
+        }
+
+        function onDocumentMouseWheel(event) {
+
+            var fov = camera.fov + event.deltaY * 0.05;
+
+            camera.fov = THREE.Math.clamp(fov, 10, 75);
+
+            camera.updateProjectionMatrix();
+
+        }
+
+        function onDocumentTouchStart(event) {
+
+            if (event.touches.length == 1) {
+
+                event.preventDefault();
+
+                onPointerDownPointerX = event.touches[0].pageX;
+                onPointerDownPointerY = event.touches[0].pageY;
+
+                onPointerDownLon = Skybox_lon;
+                onPointerDownLat = Skybox_lat;
+
+            }
+
+        }
+
+        function onDocumentTouchMove(event) {
+
+            if (event.touches.length == 1) {
+
+                event.preventDefault();
+
+                Skybox_lon = (onPointerDownPointerX - event.touches[0].pageX) * 0.1 + onPointerDownLon;
+                Skybox_lat = (event.touches[0].pageY - onPointerDownPointerY) * 0.1 + onPointerDownLat;
+
+            }
+
+        }
+
+        function animate() {
+
+            requestAnimationFrame(animate);
+            update();
+
+        }
+
+        function update() {
+
+            if (isUserInteracting === false) { //控制旋转
+
+                Skybox_lon += 0.1;//值越大旋转越快
+
+            }
+
+            Skybox_lat = Math.max(-85, Math.min(85, Skybox_lat));
+            Skybox_phi = THREE.Math.degToRad(90 - Skybox_lat);
+            Skybox_theta = THREE.Math.degToRad(Skybox_lon);
+
+            Skybox_target.x = 500 * Math.sin(Skybox_phi) * Math.cos(Skybox_theta);
+            Skybox_target.y = 500 * Math.cos(Skybox_phi);
+            Skybox_target.z = 500 * Math.sin(Skybox_phi) * Math.sin(Skybox_theta);
+
+            camera.position.copy(Skybox_target).negate();
+            camera.lookAt(Skybox_target);
+
+            renderer.render(scene, camera);
+
+        }
+    </script>
+</body>
+
+</html>
