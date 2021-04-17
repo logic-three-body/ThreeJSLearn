@@ -175,6 +175,59 @@
 
         }
 
+        //自计算法线
+        function wave4(amplitude, frequency, phase, time, dir) {
+            for (var i = 0; i < geometry.faces.length; ++i) {
+                //变量三角面三个顶点
+                var Vernum1 = geometry.faces[i].a;
+                var Vernum2 = geometry.faces[i].b;
+                var Vernum3 = geometry.faces[i].c;
+
+                var vA = geometry.vertices[Vernum1];
+                var vB = geometry.vertices[Vernum2];
+                var vC = geometry.vertices[Vernum3];
+
+                var cb = new THREE.Vector3(),
+                    ab = new THREE.Vector3();
+
+                cb.subVectors(vC, vB);
+                ab.subVectors(vA, vB);
+                cb.cross(ab);
+
+                //处理顶点
+                var waterheight1 = amplitude * Math.sin((vA.x * i) * frequency + time);
+                var waterheight2 = amplitude * Math.sin((vB.x * i) * frequency + time);
+                var waterheight3 = amplitude * Math.sin((vC.x * i) * frequency + time);
+
+                vA.y = waterheight1;
+                vB.y = waterheight2;
+                vC.y = waterheight3;
+                geometry.verticesNeedUpdate = true;
+
+                // //处理法线
+                // for (var v = 0; v < geometry.faces[i].vertexNormals.length; ++v) {
+                //     geometry.faces[i].vertexNormals[v].copy(cb.normalize()); //使用=不行，需要调用copy传递属性
+                //     geometry.normalsNeedUpdate = true;
+                // }
+
+
+                //切线法求法线失败了
+                var tagentChange1 = i * amplitude * Math.cos((vA.x * i) * frequency + time);
+                var tagent1 = new THREE.Vector3(1, tagentChange1, 0).normalize();
+                var tagentChange2 = i * amplitude * Math.cos((vB.x * i) * frequency + time);
+                var tagent2 = new THREE.Vector3(1, tagentChange2, 0).normalize();
+                var tagentChange3 = i * amplitude * Math.cos((vC.x * i) * frequency + time);
+                var tagent3 = new THREE.Vector3(1, tagentChange3, 0).normalize();
+                //处理顶点法向量
+                geometry.faces[i].vertexNormals[0].copy(new THREE.Vector3(-tagent1.y, tagent1.x, 0));
+                geometry.normalsNeedUpdate = true;
+                geometry.faces[i].vertexNormals[1].copy(new THREE.Vector3(-tagent2.y, tagent2.x, 0));
+                geometry.normalsNeedUpdate = true;
+                geometry.faces[i].vertexNormals[2].copy(new THREE.Vector3(-tagent3.y, tagent3.x, 0));
+                geometry.normalsNeedUpdate = true;
+            }
+        }
+
         /**
          * 相机设置
          */
@@ -196,7 +249,7 @@
 
         // 渲染函数
         function render2() {
-            wave2(amplitude, frequency, phase, time += 0.1, direct);
+            wave3(amplitude, frequency, phase, time += 0.1, direct);
             requestAnimationFrame(render2);
             renderer.render(scene, camera); //执行渲染操作
         }
