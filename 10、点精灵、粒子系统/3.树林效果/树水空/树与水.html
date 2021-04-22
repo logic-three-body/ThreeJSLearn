@@ -174,8 +174,9 @@
       fire.add(particle);
     }
 
-    //空容器设置
+    //火焰容器设置
     fire.position.z = 0;
+    //fire.position.y=5;
     scene.add(fire);
 
     /**
@@ -226,6 +227,7 @@
     }
 
     //火焰粒子
+    //refer:https://www.jianshu.com/p/1d8666399b8f
     function generateFireSprite() {
 
       var canvas = document.createElement('canvas');
@@ -257,16 +259,17 @@
 
       new TWEEN.Tween(particle)
         .delay(delay)
-        .to({}, 200)
+        .to({}, 400)
         .onComplete(initSparkParticle)
         .start();
 
       new TWEEN.Tween(particle.position)
         .delay(delay)
         .to({
-          x: Math.random() * 4000 - 2000,
-          y: Math.random() * 1000 - 500,
-          z: Math.random() * 4000 - 2000
+          //控制火焰高度
+          //x: Math.random() * 3000 - 500,
+          y: Math.random() * 3000 - 500,
+          //z: Math.random() * 3000 - 500
         }, 10000)
         .start();
 
@@ -281,13 +284,7 @@
     }
 
     function Fire() {
-      TWEEN.update();
-      if (fire.position.z !== 0) {
-        fire.position.z += 1;
-        fire.position.x -= 1;
-      } else {
-        fire.rotation.z = 0;
-      }
+      TWEEN.update(); //更新火苗
     }
 
 
