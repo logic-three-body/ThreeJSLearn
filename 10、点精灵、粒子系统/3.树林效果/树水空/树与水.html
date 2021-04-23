@@ -134,13 +134,15 @@
     var Skybox = new THREE.SphereGeometry(600, 50, 50);
     var materialSkybox = new THREE.MeshBasicMaterial({
       color: 0xffffff,
-      side: THREE.BackSide,
+      side: THREE.DoubleSide,
+
     });
     var meshSkybox = new THREE.Mesh(Skybox, materialSkybox);
     scene.add(meshSkybox);
     var textureLoader = new THREE.TextureLoader();
     var texture = textureLoader.load('satara_night_1k.jpg');
     meshSkybox.material.map = texture;
+    scene.background = texture;
 
     /*
     添加音频源
@@ -148,7 +150,7 @@
     var listener = new THREE.AudioListener();
     var audio = new THREE.Audio(listener);
     var audioLoader = new THREE.AudioLoader();
-    audioLoader.load('Taki.mp3', function (AudioBuffer) {
+    audioLoader.load('Rain.mp3', function (AudioBuffer) {
       audio.setBuffer(AudioBuffer);
       audio.setLoop(true);
       audio.setVolume(0.3);
