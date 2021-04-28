@@ -47,13 +47,19 @@
     // uv两个方向纹理重复数量
     NormtextureGrass.repeat.set(10, 10);
 
-    var materialGrass = new THREE.MeshLambertMaterial({
+    var BumtextureGrass = new THREE.TextureLoader().load("GrassMap/grassmud/brown_mud_leaves_01_bump_1k.png");
+    // 设置纹理的重复模式
+    BumtextureGrass.wrapS = THREE.RepeatWrapping;
+    BumtextureGrass.wrapT = THREE.RepeatWrapping;
+    // uv两个方向纹理重复数量
+    NormtextureGrass.repeat.set(10, 10);
+    var materialGrass = new THREE.MeshPhongMaterial({
       color: 0x777700,
       map: DifftextureGrass,
       normalMap: NormtextureGrass,
       normalScale: new THREE.Vector2(1.5, 1.5),
-      // bumpMap: textureBump, //凹凸贴图
-      // bumpScale: 3, //设置凹凸高度，默认值1。
+      bumpMap: BumtextureGrass, //凹凸贴图
+      bumpScale: 3, //设置凹凸高度，默认值1。
       // depthTest: false,
     });
     var meshGrass = new THREE.Mesh(geometryGrass, materialGrass); //网格模型对象Mesh
