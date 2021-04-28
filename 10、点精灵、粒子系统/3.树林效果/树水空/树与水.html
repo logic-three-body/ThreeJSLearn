@@ -33,15 +33,27 @@
      */
     var geometryGrass = new THREE.PlaneBufferGeometry(1000, 1000); //矩形平面
     // 加载草地纹理贴图
-    var textureGrass = new THREE.TextureLoader().load("grass.jpg");
+    var DifftextureGrass = new THREE.TextureLoader().load("GrassMap/grassmud/brown_mud_leaves_01_diff_1k.png");
     // 设置纹理的重复模式
-    textureGrass.wrapS = THREE.RepeatWrapping;
-    textureGrass.wrapT = THREE.RepeatWrapping;
+    DifftextureGrass.wrapS = THREE.RepeatWrapping;
+    DifftextureGrass.wrapT = THREE.RepeatWrapping;
     // uv两个方向纹理重复数量
-    textureGrass.repeat.set(10, 10);
+    DifftextureGrass.repeat.set(10, 10);
+
+    var NormtextureGrass = new THREE.TextureLoader().load("GrassMap/grassmud/brown_mud_leaves_01_Nor_1k.png");
+    // 设置纹理的重复模式
+    NormtextureGrass.wrapS = THREE.RepeatWrapping;
+    NormtextureGrass.wrapT = THREE.RepeatWrapping;
+    // uv两个方向纹理重复数量
+    NormtextureGrass.repeat.set(10, 10);
+
     var materialGrass = new THREE.MeshLambertMaterial({
       color: 0x777700,
-      map: textureGrass,
+      map: DifftextureGrass,
+      normalMap: NormtextureGrass,
+      normalScale: new THREE.Vector2(1.5, 1.5),
+      // bumpMap: textureBump, //凹凸贴图
+      // bumpScale: 3, //设置凹凸高度，默认值1。
       // depthTest: false,
     });
     var meshGrass = new THREE.Mesh(geometryGrass, materialGrass); //网格模型对象Mesh

@@ -27,20 +27,22 @@
      * 创建一个草地地面
      */
     var geometry = new THREE.PlaneGeometry(1000, 1000); //矩形平面
-    // 加载草地纹理贴图
-    var texture = new THREE.TextureLoader().load("grass.jpg");
+    // 加载草地纹理漫反射贴图
+    var Difftexture = new THREE.TextureLoader().load("grass.jpg");
     // 设置纹理的重复模式
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
+    Difftexture.wrapS = THREE.RepeatWrapping;
+    Difftexture.wrapT = THREE.RepeatWrapping;
     // uv两个方向纹理重复数量
-    texture.repeat.set(10, 10);
+    Difftexture.repeat.set(10, 10);
+
+
     var material = new THREE.MeshLambertMaterial({
-      color: 0x777700,
-      // map:texture,
+      //color: 0x777700,
+      map: Difftexture,
     });
     var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
     scene.add(mesh); //网格模型添加到场景中
-    mesh.rotateX(-Math.PI/2);
+    mesh.rotateX(-Math.PI / 2);
     /**
      * 精灵创建树林效果
      */
@@ -49,7 +51,7 @@
     // 批量创建表示一个树的精灵模型
     for (let i = 0; i < 100; i++) {
       var spriteMaterial = new THREE.SpriteMaterial({
-        map:textureTree,//设置精灵纹理贴图
+        map: textureTree, //设置精灵纹理贴图
       });
       // 创建精灵模型对象
       var sprite = new THREE.Sprite(spriteMaterial);
@@ -95,11 +97,11 @@
     // 渲染函数
     function render() {
       renderer.render(scene, camera); //执行渲染操作
-      requestAnimationFrame(render);//请求再次执行渲染函数render，渲染下一帧
+      requestAnimationFrame(render); //请求再次执行渲染函数render，渲染下一帧
     }
     render();
     //创建控件对象  相机对象camera作为参数   控件可以监听鼠标的变化，改变相机对象的属性
-    var controls = new THREE.OrbitControls(camera,renderer.domElement);
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
   </script>
 
 </body>
