@@ -53,13 +53,32 @@
     BumtextureGrass.wrapT = THREE.RepeatWrapping;
     // uv两个方向纹理重复数量
     NormtextureGrass.repeat.set(10, 10);
+
+    var LightextureGrass = new THREE.TextureLoader().load("GrassMap/grassmud/brown_mud_leaves_01_AO_1k.png");
+    // 设置纹理的重复模式
+    LightextureGrass.wrapS = THREE.RepeatWrapping;
+    LightextureGrass.wrapT = THREE.RepeatWrapping;
+    // uv两个方向纹理重复数量
+    LightextureGrass.repeat.set(10, 10);
+
+    var SeptextureGrass = new THREE.TextureLoader().load("GrassMap/grassmud/brown_mud_leaves_01_spec_1k.png");
+    // 设置纹理的重复模式
+    SeptextureGrass.wrapS = THREE.RepeatWrapping;
+    SeptextureGrass.wrapT = THREE.RepeatWrapping;
+    // uv两个方向纹理重复数量
+    SeptextureGrass.repeat.set(10, 10);
+
     var materialGrass = new THREE.MeshPhongMaterial({
-      color: 0x777700,
+      color: 0xffffff,
       map: DifftextureGrass,
       normalMap: NormtextureGrass,
       normalScale: new THREE.Vector2(1.5, 1.5),
       bumpMap: BumtextureGrass, //凹凸贴图
       bumpScale: 3, //设置凹凸高度，默认值1。
+      lightMap: LightextureGrass, // 设置光照贴图
+      lightMapIntensity: 0.75, //烘培光照的强度. 默认 1.
+      specularMap: SeptextureGrass, //高光贴图   
+      shininess: 25,
       // depthTest: false,
     });
     var meshGrass = new THREE.Mesh(geometryGrass, materialGrass); //网格模型对象Mesh
