@@ -19,6 +19,8 @@
   <script src="JS/Projector.js"></script>
   <script src="JS/stats.min.js"></script>
   <script src="JS/tween.min.js"></script>
+  <script src="JS/Water.js"></script>
+  <script src="JS/Sky.js"></script>
 </head>
 
 <body>
@@ -76,7 +78,7 @@
       bumpMap: BumtextureGrass, //凹凸贴图
       bumpScale: 3, //设置凹凸高度，默认值1。
       lightMap: LightextureGrass, // 设置光照贴图
-      lightMapIntensity: 0.75, //烘培光照的强度. 默认 1.
+      lightMapIntensity: 1.5, //烘培光照的强度. 默认 1.
       specularMap: SeptextureGrass, //高光贴图   
       shininess: 25,
       // depthTest: false,
@@ -106,41 +108,72 @@
       spriteTree.position.set(1000 * k1, 50, 1000 * k2)
     }
 
-    /*
-      创建一条河流
-    */
-    var geometryWater = new THREE.PlaneBufferGeometry(100, 1000); //矩形平面
-    //加载水的纹理贴图
-    var textureLoader = new THREE.TextureLoader();
-    var textureWater = textureLoader.load('water.jpg'); // 加载纹理贴图
-    var textureWater_norm = textureLoader.load('water_norm1.jpeg'); // 加载法线贴图   
-    // 设置纹理的重复模式
-    textureWater.wrapS = THREE.RepeatWrapping;
-    textureWater.wrapT = THREE.RepeatWrapping;
-    textureWater_norm.wrapS = THREE.RepeatWrapping;
-    textureWater_norm.wrapT = THREE.RepeatWrapping;
-    textureWater.repeat.set(1, 10);
-    textureWater_norm.repeat.set(1, 10);
-    var materialWater = new THREE.MeshPhongMaterial({
-      // color: 0x0000ff,
-      side: THREE.DoubleSide, //两面可见
-      specular: 0x4488ee,
-      shininess: 12,
-      map: textureWater, // 设置纹理贴图
-      normalMap: textureWater_norm,
-      depthTest: false,
-      normalScale: new THREE.Vector2(1.5, 1.5),
-      transparent: true,
-      // 设置材质透明度
-      opacity: 0.5,
-      //wireframe: true, //线框模式渲染
-    }); //材质对象Material 
-    var meshWater = new THREE.Mesh(geometryWater, materialWater); //网格模型对象Mesh;
-    geometryWater.rotateX(-Math.PI / 2);
-    scene.add(meshWater);
+    // River
+    Sunlight = new THREE.DirectionalLight(0xffffff, 0.8);
+    scene.add(Sunlight);
+
+    var sky = new THREE.Sky();
+    sky.scale.setScalar(10000);
+    scene.add(sky);
+
+    var uniforms = sky.material.uniforms;
+
+    uniforms.turbidity.value = 1.3;
+    uniforms.rayleigh.value = 2.5;
+    uniforms.luminance.value = 0.9;
+    uniforms.mieCoefficient.value = 0.005;
+    uniforms.mieDirectionalG.value = 0.8;
+
+    var parameters = {
+      distance: 400,
+      inclination: 0.49,
+      azimuth: 0.205
+    };
+
+
+
+    var waterGeometry = new THREE.PlaneBufferGeometry(100, 1000);
+
+    water = new THREE.Water(
+      waterGeometry, {
+        textureWidth: 512,
+        textureHeight: 512,
+        waterNormals: new THREE.TextureLoader().load('waternormals.jpg', function (texture) {
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        }),
+        alpha: 1.0,
+        sunDirection: Sunlight.position.clone().normalize(),
+        sunColor: 0xffffff,
+        waterColor: 0x001e0f,
+        distortionScale: 3.7,
+        fog: scene.fog !== undefined,
+      }
+    );
+
+    water.rotation.x = -Math.PI / 2;
+    water.material.depthTest=false;
+    water.position.set(0, 0.1, 0);
+    scene.add(water);
+
+    function updateSun() {
+
+      var theta = Math.PI * (parameters.inclination - 0.5);
+      var phi = 2 * Math.PI * (parameters.azimuth - 0.5);
+
+      Sunlight.position.x = parameters.distance * Math.cos(phi);
+      Sunlight.position.y = parameters.distance * Math.sin(phi) * Math.sin(theta);
+      Sunlight.position.z = parameters.distance * Math.sin(phi) * Math.cos(theta);
+
+      sky.material.uniforms.sunPosition.value = Sunlight.position.copy(Sunlight.position);
+      water.material.uniforms.sunDirection.value.copy(Sunlight.position).normalize();
+
+
+    }
+
+    updateSun();
     // 坐标系辅助显示
     var axesHelper = new THREE.AxesHelper(200);
-    // scene.add(axesHelper);
+    scene.add(axesHelper);
     /**
      * 精灵创建下雨效果
      */
@@ -165,21 +198,6 @@
     }
     scene.add(groupRain); //雨滴群组插入场景中
 
-    /*
-    添加天空盒
-    */
-    var Skybox = new THREE.SphereGeometry(600, 50, 50);
-    var materialSkybox = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      side: THREE.DoubleSide,
-
-    });
-    var meshSkybox = new THREE.Mesh(Skybox, materialSkybox);
-    scene.add(meshSkybox);
-    var textureLoader = new THREE.TextureLoader();
-    var texture = textureLoader.load('satara_night_1k.jpg');
-    meshSkybox.material.map = texture;
-    scene.background = texture;
 
     /*
     添加音频源
@@ -224,7 +242,7 @@
     //点光源
     var point = new THREE.PointLight(0xffffff);
     point.position.set(400, 200, 300); //点光源位置
-    scene.add(point); //点光源添加到场景中
+    //scene.add(point); //点光源添加到场景中
     //环境光
     var ambient = new THREE.AmbientLight(0x888888);
     scene.add(ambient);
@@ -234,7 +252,7 @@
     var width = window.innerWidth; //窗口宽度
     var height = window.innerHeight; //窗口高度
     /**透视投影相机对象*/
-    var camera = new THREE.PerspectiveCamera(60, width / height, 1, 1000);
+    var camera = new THREE.PerspectiveCamera(60, width / height, 1, 10000);
     camera.position.set(200, 300, 200); //树上面观察
     // camera.position.set(200, 30, 200); //树下面观察
     camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
@@ -245,10 +263,9 @@
     renderer.setSize(width, height); //设置渲染区域尺寸
     renderer.setClearColor(0xff8303, 1); //设置背景颜色
     document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
-
     //水面流动函数
     function flow(time) {
-      textureWater.offset.y += time / 6000;
+      water.material.uniforms.time.value += 1.0 / 60.0;
     }
 
     //下雨效果函数
