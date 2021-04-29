@@ -33,7 +33,7 @@
     /**
      * 创建一个草地地面
      */
-    var geometryGrass = new THREE.PlaneBufferGeometry(1000, 1000); //矩形平面
+    var geometryGrass = new THREE.PlaneBufferGeometry(5000, 5000); //矩形平面
     // 加载草地纹理贴图
     var DifftextureGrass = new THREE.TextureLoader().load("GrassMap/grassmud/brown_mud_leaves_01_diff_1k.png");
     // 设置纹理的重复模式
@@ -81,18 +81,22 @@
       lightMapIntensity: 1.5, //烘培光照的强度. 默认 1.
       specularMap: SeptextureGrass, //高光贴图   
       shininess: 25,
-      // depthTest: false,
+      side: THREE.DoubleSide, //两面可见
+      //depthTest: false,
     });
     var meshGrass = new THREE.Mesh(geometryGrass, materialGrass); //网格模型对象Mesh
     scene.add(meshGrass); //网格模型添加到场景中
+    meshGrass.position.set(0, 0, 0);
+    meshGrass.translateY(-0.3);
     meshGrass.rotateX(-Math.PI / 2);
+
     /**
      * 精灵创建树林效果
      */
     // 加载树纹理贴图
     var textureRain = new THREE.TextureLoader().load("tree.png");
     // 批量创建表示一个树的精灵模型
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 500; i++) {
       var spriteMaterialTree = new THREE.SpriteMaterial({
         map: textureRain, //设置精灵纹理贴图
         //depthTest:false,
@@ -105,7 +109,7 @@
       var k1 = Math.random() - 0.5;
       var k2 = Math.random() - 0.5;
       // 设置精灵模型位置，在xoz平面上随机分布
-      spriteTree.position.set(1000 * k1, 50, 1000 * k2)
+      spriteTree.position.set(5000 * k1, 50, 5000 * k2)
     }
 
     // River
@@ -113,7 +117,7 @@
     scene.add(Sunlight);
 
     var sky = new THREE.Sky();
-    sky.scale.setScalar(10000);
+    sky.scale.setScalar(5000);
     scene.add(sky);
 
     var uniforms = sky.material.uniforms;
@@ -132,7 +136,7 @@
 
 
 
-    var waterGeometry = new THREE.PlaneBufferGeometry(100, 1000);
+    var waterGeometry = new THREE.PlaneBufferGeometry(5000, 5000);
 
     water = new THREE.Water(
       waterGeometry, {
@@ -141,7 +145,7 @@
         waterNormals: new THREE.TextureLoader().load('waternormals.jpg', function (texture) {
           texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
         }),
-        alpha: 1.0,
+        alpha: 0.9,
         sunDirection: Sunlight.position.clone().normalize(),
         sunColor: 0xffffff,
         waterColor: 0x001e0f,
@@ -151,7 +155,7 @@
     );
 
     water.rotation.x = -Math.PI / 2;
-    water.material.depthTest=false;
+    water.material.depthTest = false;
     water.position.set(0, 0.1, 0);
     scene.add(water);
 
@@ -194,7 +198,7 @@
       var k1 = Math.random() - 0.5;
       var k2 = Math.random() - 0.5;
       // 设置精灵模型位置，在空间中随机分布
-      spriteDrop.position.set(1000 * k1, 300 * Math.random(), 1000 * k2)
+      spriteDrop.position.set(5000 * k1, 300 * Math.random(), 5000 * k2)
     }
     scene.add(groupRain); //雨滴群组插入场景中
 
@@ -273,11 +277,11 @@
       // 每次渲染遍历雨滴群组，刷新频率30~60FPS，两帧时间间隔16.67ms~33.33ms
       // 每次渲染都会更新雨滴的位置，进而产生动画效果
       groupRain.children.forEach(sprite => {
-        // 雨滴的y坐标每次减2
-        sprite.position.y -= 2;
+        // 雨滴的y坐标每次减5
+        sprite.position.y -= 5;
         if (sprite.position.y < 0) {
           // 如果雨滴落到地面，重置y，从新下落
-          sprite.position.y = 300;
+          sprite.position.y = 400;
         }
       });
     }
