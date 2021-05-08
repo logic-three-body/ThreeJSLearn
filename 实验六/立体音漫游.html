@@ -2,71 +2,12 @@
 <html lang="en">
 
 <head>
-	<title>three.js webgl - sea3d / sound</title>
+	<title>立体音漫游</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<style>
-		body {
-			font-family: Monospace;
-			background-color: #000;
-			margin: 0px;
-			overflow: hidden;
-		}
+	<link rel="stylesheet" type="text/css" href="CSS/style.css">
 
-		#info {
-			color: #fff;
-			position: absolute;
-			top: 10px;
-			width: 100%;
-			text-align: center;
-			z-index: 100;
-			display: block;
 
-		}
-
-		#blocker {
-
-			position: absolute;
-
-			width: 100%;
-			height: 100%;
-
-			background-color: rgba(0, 0, 0, 0.5);
-
-		}
-
-		#instructions {
-
-			width: 100%;
-			height: 100%;
-
-			display: -webkit-box;
-			display: -moz-box;
-			display: box;
-
-			-webkit-box-orient: horizontal;
-			-moz-box-orient: horizontal;
-			box-orient: horizontal;
-
-			-webkit-box-pack: center;
-			-moz-box-pack: center;
-			box-pack: center;
-
-			-webkit-box-align: center;
-			-moz-box-align: center;
-			box-align: center;
-
-			color: #ffffff;
-			text-align: center;
-
-			cursor: pointer;
-
-		}
-
-		a {
-			color: white
-		}
-	</style>
 	<script src="JS/build/three.js" defer></script>
 
 	<script src="js/controls/PointerLockControls.js" defer></script>
@@ -86,9 +27,13 @@
 	<script src="js/Detector.js" defer></script>
 	<script src="js/libs/stats.min.js" defer></script>
 
-	<!--loading -->>
+	<!--loading my scene-->>
+	<script src="js/scene/Rendering.js" defer></script>
+	<script src="JS/scene/keyboard.js" defer></script>
+	<script src="JS/scene/Player.js"></script>
+	<script src="JS/scene/SoundEffect.js"></script>
 	<script src="js/scene/main.js" defer></script>
-	<script src="js/scene/loadingAsset.js" defer></script>
+
 </head>
 
 <body>
@@ -99,10 +44,7 @@
 			<br />
 			(W, A, S, D | ← ↑ → 下 => 移动, 鼠标左(右)键 => 移动视角 | ESC=>暂停)
 		</div>
-
 	</div>
-
-
 </body>
 
 </html>
