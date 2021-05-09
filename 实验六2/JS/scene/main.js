@@ -26,11 +26,11 @@ if (havePointerLock) {
 
             blocker.style.display = 'none';
 
-        } else {
+        } else {//按ESC触发
 
             controls.enabled = false;
 
-            blocker.style.display = 'block';
+            blocker.style.display = 'block';//触发html中的blocker下的暂停指示
 
             instructions.style.display = '';
 
@@ -75,14 +75,14 @@ animate();
 
 var controlsEnabled = false;
 
-var moveForward = false;
+var moveForward = false;//移动判断
 var moveBackward = false;
 var moveLeft = false;
 var moveRight = false;
 var canJump = false;
 
 var prevTime = performance.now();
-var velocity = new THREE.Vector3();
+var velocity = new THREE.Vector3();//用于移动的速度
 var direction = new THREE.Vector3();
 
 

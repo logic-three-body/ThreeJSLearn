@@ -13,6 +13,7 @@ function animate() {
 
     if (controlsEnabled === true) {
 
+        //当raycaster 射线 触碰到物体
         raycaster.ray.origin.copy(controls.getObject().position);
         raycaster.ray.origin.y -= 10;
 
@@ -35,7 +36,7 @@ function animate() {
         if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
         if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
 
-        if (onObject === true) {
+        if (onObject === true) {//当与物体交互可以跳跃
 
             velocity.y = Math.max(0, velocity.y);
             canJump = true;
