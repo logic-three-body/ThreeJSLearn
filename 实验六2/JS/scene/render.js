@@ -1,4 +1,4 @@
-function onWindowResize() {
+function onWindowResize() {//自适应窗口渲染
 
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
@@ -9,7 +9,7 @@ function onWindowResize() {
 
 function animate() {
 
-    requestAnimationFrame(animate);
+    requestAnimationFrame(animate);//每帧执行此函数
 
     if (controlsEnabled === true) {
 
@@ -17,7 +17,7 @@ function animate() {
         raycaster.ray.origin.copy(controls.getObject().position);
         raycaster.ray.origin.y -= 10;
 
-        var intersections = raycaster.intersectObjects(objects);
+        var intersections = raycaster.intersectObjects(objects);//
 
         var onObject = intersections.length > 0;
 

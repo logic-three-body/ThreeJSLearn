@@ -40,6 +40,7 @@ loader.onComplete = function (e) {
 
     collisionArea = loader.getMesh("Torus003");
 
+    //TODO load new sea3d asset
     animate();
 
 };

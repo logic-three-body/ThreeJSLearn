@@ -10,7 +10,7 @@ function init() {
     light.position.set(0.5, 1, 0.75);
     scene.add(light);
 
-    controls = new THREE.PointerLockControls(camera);//加入控件
+    controls = new THREE.PointerLockControls(camera);//加入鼠标控件，此时鼠标即为摄像机视角
     scene.add(controls.getObject());
 
     var onKeyDown = function (event) {//控制场景移动 键盘按下事件
@@ -148,7 +148,7 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    //
+    //auto resizing render
 
     window.addEventListener('resize', onWindowResize, false);
 
