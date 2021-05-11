@@ -19,7 +19,7 @@ if (havePointerLock) {
     var pointerlockchange = function (event) {
 
         if (document.pointerLockElement === element || document.mozPointerLockElement === element || document
-            .webkitPointerLockElement === element) {
+            .webkitPointerLockElement === element) {//游戏正常进行
 
             controlsEnabled = true;
             controls.enabled = true;
