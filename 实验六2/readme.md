@@ -8,7 +8,7 @@
 
 玩法很简单：初次进入游戏后点击继续（游戏提示已经写在屏幕上了），玩家四处移动，遇到方块可以跳到方块上（此处判断较为简单，没有碰撞检测，所以方块可以穿过）
 
-![](![start.gif](https://github.com/logic-three-body/ThreeJSLearn/blob/master/%E5%AE%9E%E9%AA%8C%E5%85%AD2/img/orgin/start.gif?raw=true)
+![start.gif](https://github.com/logic-three-body/ThreeJSLearn/blob/master/%E5%AE%9E%E9%AA%8C%E5%85%AD2/img/orgin/start.gif?raw=true)
 
 
 
