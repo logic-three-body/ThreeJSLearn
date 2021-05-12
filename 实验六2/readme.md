@@ -16,6 +16,8 @@
 
 ## 原版代码分析
 
+原版版本：[here](https://github.com/logic-three-body/ThreeJSLearn/tree/e73819838593ca59c2dcf1eefc7cd2e2bf67aaf1/%E5%AE%9E%E9%AA%8C%E5%85%AD2)
+
 ### HTML部分
 
 在引入的script中，three.js是图形库，PointerLockControls.js是鼠标控件，我将场景的实现拆分在了三个js文件里（loading my scene下面的三个）
