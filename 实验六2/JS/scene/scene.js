@@ -3,12 +3,12 @@ function init() {
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xffff);
-    scene.fog = new THREE.Fog(0xffff, 0, 750); //雾效
+    scene.background = new THREE.Color(0xf);
+    scene.fog = new THREE.Fog(0xf, 0, 750); //雾效
 
     var light = new THREE.HemisphereLight(0xeeeeff, 0x777788, 0.75); //光源直接放置于场景之上，光照颜色从天空光线颜色颜色渐变到地面光线颜色。
     light.position.set(0.5, 1, 0.75);
-    scene.add(light);
+    //scene.add(light);
 
     controls = new THREE.PointerLockControls(camera); //加入鼠标控件，此时鼠标即为摄像机视角
     scene.add(controls.getObject());
@@ -182,6 +182,18 @@ function init() {
         objects.push(box);
 
     }
+
+
+    //加载机器人
+    var robot_loader = new THREE.SEA3D( {
+
+        autoPlay : true, // Auto play animations
+        container : scene // Container to add models
+
+    } );
+	// Open3DGC - Export by SEA3D Studio
+    robot_loader.load('models/mascot.tjs.sea');
+
 
     //rendering
 
