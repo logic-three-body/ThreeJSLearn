@@ -135,8 +135,14 @@ function init() {
     var floorMaterial = new THREE.MeshBasicMaterial({
         vertexColors: THREE.VertexColors
     });
-
-    var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+    var textureLoader = new THREE.TextureLoader();
+    var sandtex = textureLoader.load('sand.jpg');
+    var floorMaterial2 = new THREE.MeshLambertMaterial({
+        //vertexColors: THREE.VertexColors,
+        color: 0xff,
+        map: sandtex,
+    });
+    var floor = new THREE.Mesh(floorGeometry, floorMaterial2);
     scene.add(floor);
 
     // objects
