@@ -74,7 +74,7 @@ body部分设置了一个指示牌（当玩家按ESC暂停时可以看到）
 
 **请结合代码和注释阅读**
 
-辅助控件：[raycaster](http://www.yanhuangxueyuan.com/threejs/docs/index.html#api/zh/core/Raycaster) 
+辅助控件：[raycaster](http://www.yanhuangxueyuan.com/threejs/docs/index.html#api/zh/core/Raycaster)  [hemispherelight半球灯](http://www.yanhuangxueyuan.com/threejs/docs/index.html#api/zh/lights/HemisphereLight) [hemispherelighthelper](http://www.yanhuangxueyuan.com/threejs/docs/#api/zh/helpers/HemisphereLightHelper)
 
 #### scene.js
 
@@ -84,15 +84,21 @@ function init() {
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xffffff);
-    scene.fog = new THREE.Fog(0xffffff, 0, 750); //雾效
+    scene.background = new THREE.Color(0xffff);
+    scene.fog = new THREE.Fog(0xffff, 0, 750); //雾效
 
-    var light = new THREE.HemisphereLight(0xeeeeff, 0x777788, 0.75);
+    var light = new THREE.HemisphereLight(0xeeeeff, 0x777788, 0.75); //光源直接放置于场景之上，光照颜色从天空光线颜色颜色渐变到地面光线颜色。
     light.position.set(0.5, 1, 0.75);
     scene.add(light);
 
     controls = new THREE.PointerLockControls(camera); //加入鼠标控件，此时鼠标即为摄像机视角
     scene.add(controls.getObject());
+
+    //坐标辅助控件
+    var axisHelper = new THREE.AxesHelper(25000); //红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴
+    //scene.add(axisHelper);
+    //半球灯辅助控件
+
 
     var onKeyDown = function (event) { //控制场景移动 键盘按下事件
 
@@ -159,12 +165,12 @@ function init() {
     document.addEventListener('keyup', onKeyUp, false);
 
     raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10); //raycaster用于判断和物体的接触【类比Unity】
-/*
-  origin —— 光线投射的原点向量。
-  direction —— 向射线提供方向的方向向量，应当被标准化。
-  near —— 返回的所有结果比near远。near不能为负值，其默认值为0。
-  far —— 返回的所有结果都比far近。far不能小于near，其默认值为Infinity（正无穷。）  
-*/
+    /*
+      origin —— 光线投射的原点向量。
+      direction —— 向射线提供方向的方向向量，应当被标准化。
+      near —— 返回的所有结果比near远。near不能为负值，其默认值为0。
+      far —— 返回的所有结果都比far近。far不能小于near，其默认值为Infinity（正无穷。）  
+    */
 
     //以下为场景搭建 场景位置以及物体颜色随机生成
 
@@ -236,7 +242,7 @@ function init() {
         var boxMaterial = new THREE.MeshPhongMaterial({
             specular: 0xffffff,
             flatShading: true,
-            vertexColors: THREE.VertexColors
+            vertexColors: THREE.VertexColors,
         });
         formula1 = Math.random() * 0.2 + 0.5;
         formula2 = Math.random() * 0.25 + 0.75;
@@ -244,10 +250,10 @@ function init() {
 
         var box = new THREE.Mesh(boxGeometry, boxMaterial);
         var formulapx = Math.floor(Math.random() * 20 - 10) * 20;
-        var formulapy = Math.floor(Math.random() * 20 - 10) * 20;
-        var formulapz = Math.floor(Math.random() * 20) * 20 + 10;
+        var formulapy = Math.floor( Math.random() * 20 ) * 20 + 10;
+        var formulapz = Math.floor( Math.random() * 20 - 10 ) * 20;
         box.position.x = formulapx;
-        box.position.y = formulapy + 10;
+        box.position.y = formulapy;
         box.position.z = formulapz;
         //尝试让box.position.x=box.position.y=formulapx查看不同效果
 
