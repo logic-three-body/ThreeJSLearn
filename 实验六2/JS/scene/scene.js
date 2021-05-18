@@ -1,15 +1,15 @@
 function init() {
 
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
-
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf);
-    scene.fog = new THREE.Fog(0xf, 0, 750); //雾效
+    scene.background = new THREE.Color(0xffff);
+    scene.fog = new THREE.Fog(0xffff, 0, 750); //雾效
 
     var light = new THREE.HemisphereLight(0xeeeeff, 0x777788, 0.75); //光源直接放置于场景之上，光照颜色从天空光线颜色颜色渐变到地面光线颜色。
     light.position.set(0.5, 1, 0.75);
     //scene.add(light);
 
+    //scene.add(camera);
     controls = new THREE.PointerLockControls(camera); //加入鼠标控件，此时鼠标即为摄像机视角
     scene.add(controls.getObject());
 
@@ -18,7 +18,7 @@ function init() {
     axisHelper.position.set(0, 0, 0);
     //scene.add(axisHelper);
     //半球灯辅助控件
-    var lighthelper = new THREE.HemisphereLightHelper( light, 500 );
+    var lighthelper = new THREE.HemisphereLightHelper(light, 500);
     //scene.add( lighthelper );
 
     var onKeyDown = function (event) { //控制场景移动 键盘按下事件
@@ -118,15 +118,15 @@ function init() {
     }
 
     for (var i = 0, l = floorGeometry.faces.length; i < l; i++) {
-
+        var fixed1 = 0.7;
         var face = floorGeometry.faces[i];
-        formula1 = Math.random() * 0.3 + 0.5;
+        formula1 = Math.random() * fixed1 + 0.5;
         formula2 = Math.random() * 0.25 + 0.75;
         face.vertexColors[0] = new THREE.Color().setHSL(formula1, fixed, formula2);
-        formula1 = Math.random() * 0.3 + 0.5;
+        formula1 = Math.random() * fixed1 + 0.5;
         formula2 = Math.random() * 0.25 + 0.75;
         face.vertexColors[1] = new THREE.Color().setHSL(formula1, fixed, formula2);
-        formula1 = Math.random() * 0.3 + 0.5;
+        formula1 = Math.random() * fixed1 + 0.5;
         formula2 = Math.random() * 0.25 + 0.75;
         face.vertexColors[2] = new THREE.Color().setHSL(formula1, fixed, formula2);
 
@@ -160,9 +160,7 @@ function init() {
 
     for (var i = 0; i < 500; i++) { //随机分布方块
 
-        var boxMaterial = new THREE.MeshPhongMaterial({
-            specular: 0xffffff,
-            flatShading: true,
+        var boxMaterial = new THREE.MeshBasicMaterial({
             vertexColors: THREE.VertexColors,
         });
         formula1 = Math.random() * 0.2 + 0.5;
@@ -171,8 +169,8 @@ function init() {
 
         var box = new THREE.Mesh(boxGeometry, boxMaterial);
         var formulapx = Math.floor(Math.random() * 20 - 10) * 20;
-        var formulapy = Math.floor( Math.random() * 20 ) * 20 + 10;
-        var formulapz = Math.floor( Math.random() * 20 - 10 ) * 20;
+        var formulapy = Math.floor(Math.random() * 20) * 20 + 10;
+        var formulapz = Math.floor(Math.random() * 20 - 10) * 20;
         box.position.x = formulapx;
         box.position.y = formulapy;
         box.position.z = formulapz;
@@ -185,24 +183,25 @@ function init() {
 
 
     //加载机器人
-    var robot_loader = new THREE.SEA3D( {
+    var robot_loader = new THREE.SEA3D({
 
-        autoPlay : true, // Auto play animations
-        container : scene // Container to add models
+        autoPlay: true, // Auto play animations
+        container: scene // Container to add models
 
-    } );
-	// Open3DGC - Export by SEA3D Studio
+    });
+    // Open3DGC - Export by SEA3D Studio
     robot_loader.load('models/mascot.tjs.sea');
 
 
     //rendering
-
+    robot_loader.onComplete = function (e) {
+        animate();
+    };
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    //auto resizing render
 
     window.addEventListener('resize', onWindowResize, false);
 

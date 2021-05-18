@@ -60,7 +60,10 @@ function animate() {
         prevTime = time;
 
     }
-
+    //auto resizing render
+    // Update SEA3D Animations
+    THREE.SEA3D.AnimationHandler.update(delta);
     renderer.render(scene, camera);
 
 }
+
