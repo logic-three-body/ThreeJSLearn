@@ -10,11 +10,11 @@
 
 ## 结果图
 
-![image-20210519170749837](C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20210519170749837.png)
+![img](https://logic-three-body.github.io//post-images/1621432131314.png)
 
-![image-20210519172026948](C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20210519172026948.png)
+![img](https://logic-three-body.github.io//post-images/1621432189762.png)
 
-![image-20210519172315339](C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20210519172315339.png)
+![img](https://logic-three-body.github.io//post-images/1621432198510.png)
 
 
 
@@ -342,13 +342,13 @@ ShaderMaterial的vertexshader和fragmentshader是有默认变量的。【如果�
 
 这一点three.js文档里提到了但是没有指出默认变量是啥，最后利用浏览器F12调试工具发现
 
-![image-20210519211512020](C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20210519211512020.png)
+![img](https://logic-three-body.github.io//post-images/1621432247536.png)
 
 
 
-![image-20210519211701054](C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20210519211701054.png)
+![img](https://logic-three-body.github.io//post-images/1621432267313.png)
 
-![image-20210519213244570](C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20210519213244570.png)
+![img](https://logic-three-body.github.io//post-images/1621432273276.png)
 
 ## 感悟
 
