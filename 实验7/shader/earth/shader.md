@@ -6,7 +6,7 @@
 
 本次实验利用three.js实现phong材质【之前在GAMES202作业0里也接触过phong shader的glsl版本】，算法部分不难理解，本次遇到的困难主要在于不熟悉three.js的shader接口【就像unity shaderlab里会有一些专门的变量供用户调用用于顶点、法线等计算】，之后会分析three.js的[ShaderMaterial](http://www.yanhuangxueyuan.com/threejs/docs/index.html#api/zh/materials/ShaderMaterial)的坑。
 
-项目工程：here
+项目工程：[here](https://github.com/logic-three-body/ThreeJSLearn/tree/master/%E5%AE%9E%E9%AA%8C7/shader/earth)
 
 ## 结果图
 
@@ -19,6 +19,39 @@
 
 
 ## 代码
+
+### uniform
+
+```javascript
+    var uniforms;
+    uniforms = {
+      uSampler: {//采样的图片
+        value: texture,
+      },
+      uTextureSample: {//采样选择 1为贴图 2为不带贴图
+        value: 1
+      },
+      uKd: {
+        value: new THREE.Vector3(0.05, 0.05, 0.05)//控制满反射系数
+      },
+      uKs: {
+        value: new THREE.Vector3(0.5, 0.5, 0.5)//控制高光系数
+      },
+      lightPosition: {//光源位置
+        value: point.position
+      },
+      uLightIntensity: {
+        value: 1155.0//光照强度
+      }
+    };
+    var material_raw = new THREE.ShaderMaterial({
+      uniforms: uniforms,
+      vertexShader: document.getElementById('vertexShader').textContent,
+      fragmentShader: document.getElementById('fragmentShader').textContent,
+    });
+```
+
+
 
 ### 顶点着色器
 
@@ -305,5 +338,18 @@
 
 **uniform 传入的变量 和 顶点着色器 片元着色器 接受的变量**
 
+ShaderMaterial的vertexshader和fragmentshader是有默认变量的。【如果不想three.js有任何内置变量影响你的shader，那么请使用[RawShaderMaterial](http://www.yanhuangxueyuan.com/threejs/docs/index.html#api/zh/materials/RawShaderMaterial)】
+
+这一点three.js文档里提到了但是没有指出默认变量是啥，最后利用浏览器F12调试工具发现
+
+![image-20210519211512020](C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20210519211512020.png)
 
 
+
+![image-20210519211701054](C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20210519211701054.png)
+
+![image-20210519213244570](C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20210519213244570.png)
+
+## 感悟
+
+理解算法理论之后利用编程实现仍要考虑诸多问题，比如和api的接口，这次编写shader正因为接口不对顶点没有出进去所以一直绘制出现问题，当顶点、法线、光照方向、相机方向等考虑正确后算法才可以
