@@ -21,12 +21,8 @@
   <!--**********************Shader程序***************************-->
 
   <script id="vertexShader" type="x-shader/x-vertex">
-    attribute vec3 aVertexPosition;
     attribute vec3 aNormalPosition;
     attribute vec2 aTextureCoord;
-   //uniform mat4 modelViewMatrix;
-   //uniform mat4 projectionMatrix;
-   
     varying highp vec2 vTextureCoord;
     varying highp vec3 vFragPos;
     varying highp vec3 vNormal;
@@ -34,11 +30,9 @@
     
     void main(void) {
     
-      vFragPos = aVertexPosition;
+      vFragPos = position;
       vNormal = aNormalPosition;
-    
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(aVertexPosition, 1.0);
-    
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);  
       vTextureCoord = aTextureCoord;
     
     }
@@ -49,13 +43,12 @@
 
   <script id="fragmentShader" type="x-shader/x-fragment">
     #ifdef GL_ES
-    precision mediump float;
+    precision mediump float;  
     #endif
     uniform sampler2D uSampler;
     uniform vec3 uKd;
     uniform vec3 uKs;
-    uniform vec3 uLightPos;
-    uniform vec3 uCameraPos;
+    uniform vec3 lightPosition;
     uniform float uLightIntensity;
     uniform int uTextureSample;
     
@@ -70,23 +63,27 @@
       } else {
         color = uKd;
       }
-      
+      color=uKd;
       vec3 ambient = 0.05 * color;
     
-      vec3 lightDir = normalize(uLightPos - vFragPos);
+      vec3 lightDir = normalize(lightPosition - vFragPos);
       vec3 normal = normalize(vNormal);
       float diff = max(dot(lightDir, normal), 0.0);
-      float light_atten_coff = uLightIntensity / length(uLightPos - vFragPos);
+      float light_atten_coff = uLightIntensity / length(lightPosition - vFragPos);
       vec3 diffuse =  diff * light_atten_coff * color;
     
-      vec3 viewDir = normalize(uCameraPos - vFragPos);
+      vec3 viewDir = normalize(cameraPosition - vFragPos);
       float spec = 0.0;
       vec3 reflectDir = reflect(-lightDir, normal);
       spec = pow (max(dot(viewDir, reflectDir), 0.0), 35.0);
       vec3 specular = uKs * light_atten_coff * spec;  
       
-      gl_FragColor = vec4(pow((ambient + diffuse + specular), vec3(1.0/2.2)), 1.0);
-    
+      gl_FragColor = vec4(pow((ambient + diffuse + specular), vec3(1.0/2.2)), 1.0);     
+      gl_FragColor = vec4(pow((diffuse), vec3(1.0/2.2)), 1.0);    
+
+      gl_FragColor = vec4( color, 1.0 );
+      gl_FragColor = vec4(0.5);
+       
     }
     
     
@@ -99,55 +96,7 @@
      * 创建场景对象Scene
      */
     var scene = new THREE.Scene();
-    /**
-     * 创建网格模型
-     */
-    // var geometry = new THREE.BoxGeometry(100, 100, 100); //立方体
-    // var geometry = new THREE.PlaneGeometry(400, 400); //矩形平面
-    var geometry = new THREE.SphereGeometry(100, 25, 25); //球体
-    // TextureLoader创建一个纹理加载器对象，可以加载图片作为几何体纹理
-    var textureLoader = new THREE.TextureLoader();
-    // 加载纹理贴图
-    var texture = textureLoader.load('./Earth.png');
-    var material = new THREE.MeshPhongMaterial({
-      map: texture, // 普通颜色纹理贴图
-    }); //材质对象Material
-    var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
-    scene.add(mesh); //网格模型添加到场景中
-    var uniforms;
-    uniforms = {
-      uSampler: {
-        value: texture
-      },
-      uTextureSample: {
-        value: 1
-      },
-      uKd: {
-        value: THREE.Vector3(0.05, 0.05, 0.05)
-      },
-      uKs: {
-        value: THREE.Vector3(0.05, 0.05, 0.05)
-      },
-      uLightPos: {
-        value: THREE.Vector3(mesh.position.x + 100 * 2, mesh.position.y, mesh.position.z + 100 * 2)
-      },
-      uCameraPos: {
-        value: THREE.Vector3(mesh.position.x + 100 * 2, mesh.position.y, mesh.position.z + 100 * 2)
-      },
-      uLightIntensity: {
-        value:30,
-      }
-    };
-    var material_raw = new THREE.ShaderMaterial({
-      uniforms: uniforms,
-      vertexShader: document.getElementById('vertexShader').textContent,
-      fragmentShader: document.getElementById('fragmentShader').textContent,
-    });
 
-    var mesh_raw = new THREE.Mesh(geometry, material_raw);
-    mesh_raw.position.x = (mesh.position.x + 100 * 2);
-    mesh_raw.position.z = (mesh.position.z + 100 * 2);
-    scene.add(mesh_raw);
     /**
      * 光源设置
      */
@@ -170,6 +119,54 @@
     camera.position.set(200, 300, 200); //设置相机位置
     // camera.position.set(0, 0, 200); //设置相机位置
     camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
+
+    /**
+     * 创建网格模型
+     */
+    // var geometry = new THREE.BoxGeometry(100, 100, 100); //立方体
+    // var geometry = new THREE.PlaneGeometry(400, 400); //矩形平面
+    var geometry = new THREE.SphereGeometry(100, 25, 25); //球体
+    // TextureLoader创建一个纹理加载器对象，可以加载图片作为几何体纹理
+    var textureLoader = new THREE.TextureLoader();
+    // 加载纹理贴图
+    var texture = textureLoader.load('./Earth.png');
+    var material = new THREE.MeshPhongMaterial({
+      map: texture, // 普通颜色纹理贴图
+    }); //材质对象Material
+    var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+    scene.add(mesh); //网格模型添加到场景中
+    var uniforms;
+    uniforms = {
+      uSampler: {
+        value: new textureLoader.load('./Earth.png'),
+      },
+      uTextureSample: {
+        value: 1
+      },
+      uKd: {
+        value: new THREE.Vector3(0.5, 0.5, 0.5)
+      },
+      uKs: {
+        value: new THREE.Vector3(0.5, 0.5, 0.5)
+      },
+      lightPosition: {
+        value: new THREE.Vector3(point.position.x, point.position.y, point.position.z)
+      },
+      uLightIntensity: {
+        value: 30.0
+      }
+    };
+    var material_raw = new THREE.ShaderMaterial({
+      uniforms: uniforms,
+      vertexShader: document.getElementById('vertexShader').textContent,
+      fragmentShader: document.getElementById('fragmentShader').textContent,
+    });
+
+    var mesh_raw = new THREE.Mesh(geometry, material_raw);
+    mesh_raw.position.x = (mesh.position.x + 100 * 2);
+    mesh_raw.position.z = (mesh.position.z + 100 * 2);
+    scene.add(mesh_raw);
+
     /**
      * 创建渲染器对象
      */
