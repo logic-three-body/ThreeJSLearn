@@ -26,14 +26,16 @@
     varying highp vec2 vTextureCoord;
     varying highp vec3 vFragPos;
     varying highp vec3 vNormal;
-    
+    /*
+    normal,position以及摄像机位置需要使用three.js内置参数
+    */
     
     void main(void) {
     
       vFragPos = position;
-      vNormal = aNormalPosition;
+      vNormal = normal;
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);  
-      vTextureCoord = aTextureCoord;
+      vTextureCoord = uv;
     
     }
     
@@ -79,10 +81,10 @@
       vec3 specular = uKs * light_atten_coff * spec;  
       
       gl_FragColor = vec4(pow((ambient + diffuse + specular), vec3(1.0/2.2)), 1.0);     
-      gl_FragColor = vec4(pow((diffuse), vec3(1.0/2.2)), 1.0);    
+      //gl_FragColor = vec4(pow((diffuse), vec3(1.0/2.2)), 1.0);    
 
-      gl_FragColor = vec4( color, 1.0 );
-      gl_FragColor = vec4(0.5);
+      //gl_FragColor = vec4( color, 1.0 );
+      //gl_FragColor = vec4(0.1);
        
     }
     
