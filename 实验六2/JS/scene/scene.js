@@ -136,7 +136,9 @@ function init() {
         vertexColors: THREE.VertexColors
     });
     var textureLoader = new THREE.TextureLoader();
-    var sandtex = textureLoader.load('https://img2.baidu.com/it/u=2116410189,1585260632&fm=26&fmt=auto&gp=0.jpg');
+    var str1 = 'https://img2.baidu.com/it/u=2116410189,1585260632&fm=26&fmt=auto&gp=0.jpg';
+    var str2 = './img/pixel/sand.jpg';
+    var sandtex = textureLoader.load(str2);
     var floorMaterial2 = new THREE.MeshLambertMaterial({
         //vertexColors: THREE.VertexColors,
        // color: 0xff,
