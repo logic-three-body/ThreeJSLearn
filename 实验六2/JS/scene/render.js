@@ -23,18 +23,18 @@ function animate() {
 
         var time = performance.now();
         var delta = (time - prevTime) / 1000;//时间步长
-
-        velocity.x -= velocity.x * 10.0 * delta;
-        velocity.z -= velocity.z * 10.0 * delta;
+        var speed = 10;//控制移动速度
+        velocity.x -= velocity.x * speed * delta;
+        velocity.z -= velocity.z * speed * delta;
         //y轴（向上）模拟重力
-        velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+        velocity.y -= 9.8/3 * 100.0 * delta; // 100.0 = mass 降低重力加速度营造海底移动感觉
 
         direction.z = Number(moveForward) - Number(moveBackward);
         direction.x = Number(moveLeft) - Number(moveRight);
         direction.normalize(); // this ensures consistent movements in all directions
 
-        if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
-        if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
+        if (moveForward || moveBackward) velocity.z -= direction.z * 400.0*speed * delta;
+        if (moveLeft || moveRight) velocity.x -= direction.x * 400.0*speed * delta;
 
         if (onObject === true) {//当与物体交互可以跳跃
 

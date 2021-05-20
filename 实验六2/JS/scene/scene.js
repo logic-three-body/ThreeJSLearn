@@ -3,7 +3,7 @@ function init() {
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xffff);
-    scene.fog = new THREE.Fog(0xffff, 0, 750); //雾效
+    scene.fog = new THREE.Fog(0xffff, 0, 850); //雾效
 
     var light = new THREE.HemisphereLight(0xeeeeff, 0x777788, 0.75); //光源直接放置于场景之上，光照颜色从天空光线颜色颜色渐变到地面光线颜色。
     light.position.set(0.5, 1, 0.75);
@@ -46,7 +46,7 @@ function init() {
                 break;
 
             case 32: // space
-                if (canJump === true) velocity.y += 350;
+                if (canJump === true) velocity.y += 800;
                 canJump = false;
                 break;
 
@@ -146,7 +146,7 @@ function init() {
     scene.add(floor);
 
     // objects
-    var size = 20;
+    var size = 100;
     var boxGeometry = new THREE.BoxGeometry(size, size, size);
 
     for (var i = 0, l = boxGeometry.faces.length; i < l; i++) { //设置方块颜色
@@ -163,8 +163,8 @@ function init() {
         face.vertexColors[2] = new THREE.Color().setHSL(formula1, fixed, formula2);
 
     }
-
-    for (var i = 0; i < 500; i++) { //随机分布方块
+    var num = 800;
+    for (var i = 0; i < num; i++) { //随机分布方块
 
         var boxMaterial = new THREE.MeshBasicMaterial({
             vertexColors: THREE.VertexColors,
@@ -172,11 +172,11 @@ function init() {
         formula1 = Math.random() * 0.2 + 0.5;
         formula2 = Math.random() * 0.25 + 0.75;
         boxMaterial.color.setHSL(formula1, fixed, formula2);
-
+        var coef1=60, coef2=10;//这两个系数控制方块距离海龟的远近
         var box = new THREE.Mesh(boxGeometry, boxMaterial);
-        var formulapx = Math.floor(Math.random() * 20 - 10) * 20;
-        var formulapy = Math.floor(Math.random() * 20) * 20 + 10;
-        var formulapz = Math.floor(Math.random() * 20 - 10) * 20;
+        var formulapx = Math.floor(Math.random() * coef1 - coef2) * coef1;
+        var formulapy = Math.floor(Math.random() * coef1) * coef1 + coef1;
+        var formulapz = Math.floor(Math.random() * coef1 - coef2) * coef1;
         box.position.x = formulapx;
         box.position.y = formulapy;
         box.position.z = formulapz;

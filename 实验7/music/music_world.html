@@ -58,7 +58,7 @@
 
 				float f = texture2D( tAudioData, vec2( vUv.x, 0.0 ) ).r;
 
-				float i = step( vUv.y, f ) * step( f - 0.0125, vUv.y );
+				float i = step( vUv.y, f ) * step( f - 0.0325, vUv.y );
 
 				gl_FragColor = vec4( mix( backgroundColor, color, i ), 1.0 );
 
@@ -118,7 +118,7 @@
 		//将读入音频数据转化成纹理数据格式传入shader
 		uniforms = {
 
-			tAudioData: { value: new THREE.DataTexture( analyser.data, fftSize / 2, 1, THREE.LuminanceFormat ) }
+			tAudioData: { value: new THREE.DataTexture( analyser.data, fftSize / 3, 1, THREE.LuminanceFormat ) }
 
 		};
 
