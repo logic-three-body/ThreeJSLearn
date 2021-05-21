@@ -460,7 +460,9 @@ var direction = new THREE.Vector3();
 
 ### 游戏截图
 
-![](F:\百度网盘文件自动备份至天翼云\编程\WebGL\school\Three.js源码\实验六2\img\after\海龟漫游.gif)
+![海龟漫游.gif](https://github.com/logic-three-body/ThreeJSLearn/blob/master/%E5%AE%9E%E9%AA%8C%E5%85%AD2/img/after/%E6%B5%B7%E9%BE%9F%E6%BC%AB%E6%B8%B8.gif?raw=true)
+
+
 
 ### 代码分析
 
