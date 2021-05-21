@@ -18,6 +18,8 @@
 
 原版版本：[here](https://github.com/logic-three-body/ThreeJSLearn/tree/e73819838593ca59c2dcf1eefc7cd2e2bf67aaf1/%E5%AE%9E%E9%AA%8C%E5%85%AD2)
 
+**您需要的配置：vscode+live server**
+
 ### HTML部分
 
 在引入的script中，three.js是图形库，PointerLockControls.js是鼠标控件，我将场景的实现拆分在了三个js文件里（loading my scene下面的三个）
@@ -447,6 +449,116 @@ var direction = new THREE.Vector3();
 ```
 
 
+
+## 小游戏：海底大冒险
+
+### 前言
+
+我们可以利用这个漫游框架做些什么小游戏呢，这个漫游框架里有很多值得考究和学习的地方，至于我为什么取了一个海底大冒险的名字，让我们看看我修改添加了哪些代码吧。
+
+**体验工程地址**：[here](https://github.com/logic-three-body/ThreeJSLearn/tree/master/%E5%AE%9E%E9%AA%8C%E5%85%AD2)
+
+### 游戏截图
+
+
+
+### 代码分析
+
+#### 加载大海龟模型
+
+加载的海龟是[sea3d](https://sea3d.en.softonic.com/)格式，具体说明请查看[here](http://www.yanhuangxueyuan.com/threejs/examples/?q=sea3d#webgl_loader_sea3d)
+
+
+
+```javascript
+    //加载大海龟
+    var robot_loader = new THREE.SEA3D({
+
+        autoPlay: true, // Auto play animations
+        container: scene // Container to add models
+
+    });
+    // Open3DGC - Export by SEA3D Studio
+    robot_loader.load('models/mascot.tjs.sea');
+
+
+    //load render and animation
+    robot_loader.onComplete = function (e) {
+        animate();
+    };
+```
+
+在render.js模块的animate加入模型动画加载
+
+```javascript
+    // Update SEA3D Animations
+    THREE.SEA3D.AnimationHandler.update(delta);
+```
+
+#### 海底气氛营造
+
+由于加载的模型文件格式是整个场景（即内部已配置灯光），为简化逻辑【如果想更加精细地定制场景，three.js可以通过一些接口修改sea3d文件内部灯光、模型等】以及让场景不过亮，我将原来框架的半球灯关掉，然后修改背景和雾效颜色,
+
+营造海底模糊的气氛，同时我把plane海底地面加载了沙地贴图。
+
+```javascript
+    scene.background = new THREE.Color(0xffff);
+    scene.fog = new THREE.Fog(0xffff, 0, 850); //雾效
+
+    var light = new THREE.HemisphereLight(0xeeeeff, 0x777788, 0.75); //光源直接放置于场景之上，光照颜色从天空光线颜色颜色渐变到地面光线颜色。
+    light.position.set(0.5, 1, 0.75);
+    //scene.add(light);
+```
+
+```javascript
+    var textureLoader = new THREE.TextureLoader();
+    var str1 = 'https://img2.baidu.com/it/u=2116410189,1585260632&fm=26&fmt=auto&gp=0.jpg';
+    var str2 = './img/pixel/sand.jpg';
+    var sandtex = textureLoader.load(str2);
+    var floorMaterial2 = new THREE.MeshLambertMaterial({
+        //vertexColors: THREE.VertexColors,
+       // color: 0xff,
+        map: sandtex,
+    });
+    var floor = new THREE.Mesh(floorGeometry, floorMaterial2);
+    scene.add(floor);
+```
+
+##### ！！！注意事项！！！
+
+由于我的Javascript部分都是在JS文件里写的，所以在加载图片和音频url，我遇到了问题
+
+如果您观察我工程的文件目录，贴图和音频的本地地址在js文件里应该是【如下】  
+
+```javascript
+  var str2 = '../../img/pixel/sand.jpg';
+```
+
+浏览器此时会提示
+
+![image-20210521095426812](C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20210521095426812.png)
+
+即找不到文件位置，后来我明白了其实文件的路径应该是以html文件为准，因为script文件要引入html，其实都相当于把所有script拼成大script放进html
+
+所以正确的加载格式：
+
+```javascript
+    var str2 = './img/pixel/sand.jpg';
+```
+
+或（ **./ ** 表示当前目录）
+
+```javascript
+    var str2 = 'img/pixel/sand.jpg';
+```
+
+
+
+当然我的环境是vscode+livesever模拟了服务器环境，直接打开html文件，浏览器会因为安全原因阻止你的任何图片、音频等
+
+#### 方块的分布
+
+玩家一出生是在海龟体内的，游戏的逻辑是玩家仅可以跳跃到方块，没有复杂的碰撞检测【玩家可以穿过模型、方块和一切】
 
 ## 文末推荐
 

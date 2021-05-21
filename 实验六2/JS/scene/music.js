@@ -20,7 +20,7 @@ audioMesh.add(PosAudio);
 // 创建一个音频加载器
 var audioLoader = new THREE.AudioLoader();
 // 加载音频文件，返回一个音频缓冲区对象作为回调函数参数
-var str1 = './SFX/sea.mp3';
+var str1 = 'SFX/sea.mp3';
 var str2 = 'https/www.ear0.com/sound/show/soundid-20708';
 //var str2 ='F:/百度网盘文件自动备份至天翼云/编程/WebGL/school/Three.js源码/实验六2/SFX/sea.mp3';
 audioLoader.load(str1, function(AudioBuffer) {
