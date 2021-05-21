@@ -558,7 +558,128 @@ var direction = new THREE.Vector3();
 
 #### 方块的分布
 
-玩家一出生是在海龟体内的，游戏的逻辑是玩家仅可以跳跃到方块，没有复杂的碰撞检测【玩家可以穿过模型、方块和一切】
+玩家一出生是在海龟体内的，游戏的逻辑是玩家仅可以跳跃到方块，没有复杂的碰撞检测【玩家可以穿过模型、方块和一切】,所以我尽量让方块分布在大海龟周围，这样玩家可以跳到方块上从不同角度观察大海龟。
+
+```javascript
+    var num = 800;//方块数量
+    for (var i = 0; i < num; i++) { //随机分布方块
+
+        var boxMaterial = new THREE.MeshBasicMaterial({
+            vertexColors: THREE.VertexColors,
+        });
+        formula1 = Math.random() * 0.2 + 0.5;
+        formula2 = Math.random() * 0.25 + 0.75;
+        boxMaterial.color.setHSL(formula1, fixed, formula2);
+        var coef1=60, coef2=10;//这两个系数控制方块距离海龟的远近
+        var box = new THREE.Mesh(boxGeometry, boxMaterial);
+        var formulapx = Math.floor(Math.random() * coef1 - coef2) * coef1;
+        var formulapy = Math.floor(Math.random() * coef1) * coef1 + coef1;
+        var formulapz = Math.floor(Math.random() * coef1 - coef2) * coef1;
+        box.position.x = formulapx;
+        box.position.y = formulapy;
+        box.position.z = formulapz;
+        //尝试让box.position.x=box.position.y=formulapx查看不同效果
+        scene.add(box);
+        objects.push(box);
+    }
+```
+
+#### 游戏中的物理
+
+velocity和玩家位移有关，speed用于控制玩家移动的快慢， 在原框架中，y向【竖直向】模拟重力加速度-9.8，我希望在水中y向加速度小些营造飘荡的感觉，所以这个物理量除3。
+
+```javascript
+    if (controlsEnabled === true) {
+
+        //当raycaster 射线 触碰到物体 ...
+        raycaster.ray.origin.copy(controls.getObject().position);//初始化射线位置为玩家位置 copy复制属性
+        raycaster.ray.origin.y -= 10;//如果玩家没有跳跃，则相当于射线原点现在地面（x,0,z）
+
+        var intersections = raycaster.intersectObjects(objects);//与物体相交
+
+        var onObject = intersections.length > 0;
+
+        var time = performance.now();
+        var delta = (time - prevTime) / 1000;//时间步长
+        var speed = 10;//控制移动速度
+        velocity.x -= velocity.x * speed * delta;
+        velocity.z -= velocity.z * speed * delta;
+        //y轴（向上）模拟重力
+        velocity.y -= 9.8/3 * 100.0 * delta; // 100.0 = mass 降低重力加速度营造海底移动感觉
+
+        direction.z = Number(moveForward) - Number(moveBackward);
+        direction.x = Number(moveLeft) - Number(moveRight);
+        direction.normalize(); // this ensures consistent movements in all directions
+
+        if (moveForward || moveBackward) velocity.z -= direction.z * 400.0*speed * delta;
+        if (moveLeft || moveRight) velocity.x -= direction.x * 400.0*speed * delta;
+
+        if (onObject === true) {//当与物体交互可以跳跃
+
+            velocity.y = Math.max(0, velocity.y);
+            canJump = true;
+
+        }
+
+        //保证控件和玩家一起移动
+        controls.getObject().translateX(velocity.x * delta);
+        controls.getObject().translateY(velocity.y * delta);
+        controls.getObject().translateZ(velocity.z * delta);
+
+        if (controls.getObject().position.y < 10) {
+
+            velocity.y = 0;
+            controls.getObject().position.y = 10;
+
+            canJump = true;
+
+        }
+
+        prevTime = time;
+
+    }
+```
+
+#### 音乐加载模块 music.js
+
+我在场景中某位置放置了一个音源，用户听到的音乐与和它的距离有关。
+
+```javascript
+// 用来定位音源的网格模型
+var audiobox = new THREE.BoxGeometry(10, 10, 10); //创建一个立方体几何对象Geometry
+var music_mat = new THREE.MeshBasicMaterial({
+    color: 0x0000ff
+  }); //材质对象Material
+var audioMesh = new THREE.Mesh(audiobox, music_mat);
+// 设置网格模型的位置，相当于设置音源的位置
+audioMesh.position.set(0, 0, 300);
+scene.add(audioMesh);
+// 创建一个虚拟的监听者
+var listener = new THREE.AudioListener();
+// 监听者绑定到相机对象
+camera.add(listener);
+// 创建一个位置音频对象,监听者作为参数,音频和监听者关联。
+var PosAudio = new THREE.PositionalAudio(listener);
+//音源绑定到一个网格模型上
+audioMesh.add(PosAudio);
+// 创建一个音频加载器
+var audioLoader = new THREE.AudioLoader();
+// 加载音频文件，返回一个音频缓冲区对象作为回调函数参数
+var str1 = 'SFX/sea.mp3';
+var str2 = 'https/www.ear0.com/sound/show/soundid-20708';
+//var str2 ='F:/百度网盘文件自动备份至天翼云/编程/WebGL/school/Three.js源码/实验六2/SFX/sea.mp3';
+audioLoader.load(str1, function(AudioBuffer) {
+  // console.log(buffer);
+  // 音频缓冲区对象关联到音频对象audio
+  PosAudio.setLoop(true); //是否循环
+  PosAudio.setBuffer(AudioBuffer);
+  PosAudio.setVolume(1); //音量
+  PosAudio.setRefDistance(200); //参数值越大,声音越大
+  PosAudio.play(); //播放
+});
+```
+
+
 
 ## 文末推荐
 

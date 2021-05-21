@@ -102,7 +102,7 @@ function init() {
 
     // floor
     var formula1, formula2, fixed = 0.75;
-    var floorGeometry = new THREE.PlaneGeometry(2000, 2000, 100, 100);
+    var floorGeometry = new THREE.PlaneGeometry(20000, 20000, 100, 100);
     floorGeometry.rotateX(-Math.PI / 2);
 
     for (var i = 0, l = floorGeometry.vertices.length; i < l; i++) {
@@ -165,7 +165,7 @@ function init() {
         face.vertexColors[2] = new THREE.Color().setHSL(formula1, fixed, formula2);
 
     }
-    var num = 800;
+    var num = 800;//方块数量
     for (var i = 0; i < num; i++) { //随机分布方块
 
         var boxMaterial = new THREE.MeshBasicMaterial({
@@ -183,10 +183,8 @@ function init() {
         box.position.y = formulapy;
         box.position.z = formulapz;
         //尝试让box.position.x=box.position.y=formulapx查看不同效果
-
         scene.add(box);
         objects.push(box);
-
     }
 
 
