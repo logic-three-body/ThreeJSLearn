@@ -9,6 +9,7 @@ var VSHADER_SOURCE =
   'uniform vec3 u_LightColor;\n' + // Light color
   'uniform vec3 u_LightDirection;\n' + // Light direction (in the world coordinate, normalized)
   'uniform vec3 u_AmbientLight;\n' + // Ambient light color
+  'uniform vec3 u_CameraPosition;\n'+
   'varying vec4 v_Color;\n' +
   'void main() {\n' +
   '  gl_Position = u_MvpMatrix * a_Position;\n' +
@@ -20,8 +21,15 @@ var VSHADER_SOURCE =
   '  vec3 diffuse = u_LightColor * a_Color.rgb * nDotL;\n' +
   // Calculate the color due to ambient reflection
   '  vec3 ambient = u_AmbientLight * a_Color.rgb;\n' +
+  //Calculate view direct
+  ' vec3 viewDir = normalize(u_CameraPosition - gl_Position.xyz);' +
+  //Calculate reflect direct
+  ' vec3 reflectDir = reflect(u_LightDirection,normal);' +
+  //Calculate specular
+  'float spec =pow (max(dot(viewDir, reflectDir), 0.0), 35.0);' +
+  'vec3 specular = u_LightColor*spec*4.0;'+
   // Add the surface colors due to diffuse reflection and ambient reflection
-  '  v_Color = vec4(diffuse + ambient, a_Color.a);\n' +
+  '  v_Color = vec4(diffuse + ambient + specular, a_Color.a);\n' +
   '}\n';
 
 // Fragment shader program
@@ -68,6 +76,7 @@ function main() {
   var u_LightColor = gl.getUniformLocation(gl.program, 'u_LightColor');
   var u_LightDirection = gl.getUniformLocation(gl.program, 'u_LightDirection');
   var u_AmbientLight = gl.getUniformLocation(gl.program, 'u_AmbientLight');
+  var u_CameraPosition = gl.getUniformLocation(gl.program, 'u_CameraPosition');
   if (!u_MvpMatrix || !u_NormalMatrix || !u_LightColor || !u_LightDirection || !u_AmbientLight) {
     console.log('Failed to get the storage location');
     return;
@@ -81,6 +90,11 @@ function main() {
   gl.uniform3fv(u_LightDirection, lightDirection.elements);
   // Set the ambient light
   gl.uniform3f(u_AmbientLight, 0.2, 0.2, 0.2);
+
+  //Set Camera parm
+  var g_eyeX = 0.20, g_eyeY = 0.25, g_eyeZ = 0.25; // Eye position
+  var CameraPos = new Vector3(g_eyeX, g_eyeY, g_eyeZ);
+  gl.uniform3fv(u_CameraPosition,CameraPos.elements);
 
   var modelMatrix = new Matrix4(); // Model matrix
   var mvpMatrix = new Matrix4(); // Model view projection matrix
