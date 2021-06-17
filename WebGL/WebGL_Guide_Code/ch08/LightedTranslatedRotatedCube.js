@@ -100,23 +100,48 @@ function main() {
 }
 
 function keydown(ev, gl, u_MvpMatrix, mvpMatrix, normalMatrix, modelMatrix, u_NormalMatrix, n) {
-  var move = 0.01
+  var move = 0.01;
+  var angle = 1;
   if (ev.keyCode == 39) // The right arrow key was pressed
   {
+    console.log("PRESS 39");
     modelMatrix.setTranslate(0, -move, 0); // right arrow    
   }
   else if (ev.keyCode == 37)
   {
+    console.log("PRESS 37");
     modelMatrix.setTranslate(0, move, 0); // left arrow      
   }
   else if (ev.keyCode == 40)// down arrow    
   {
+    console.log("PRESS 40");
     modelMatrix.setTranslate(-move, 0, 0); 
   }
   else if (ev.keyCode == 38)// down arrow    
   {
+    console.log("PRESS 38");
     modelMatrix.setTranslate(move, 0, 0); 
-  }   
+  }
+  else if (ev.keyCode == 68)// down D 
+  {
+    modelMatrix.rotate(90+angle, 0, 0, 1); // left arrow 
+    console.log("PRESS D");
+  }
+  else if (ev.keyCode == 65)// down A   
+  {
+    console.log("PRESS A");
+    modelMatrix.rotate(90-angle, 0, 0); 
+  }
+  else if (ev.keyCode == 87)// down W 
+  {
+    modelMatrix.rotate(90+angle, 0, 1, 0); // left arrow 
+    console.log("PRESS W");
+  }
+  else if (ev.keyCode == 83)// down S   
+  {
+    console.log("PRESS S");
+    modelMatrix.rotate(90-angle, 0, 1,0); 
+  }  
   else
   {
     return;
