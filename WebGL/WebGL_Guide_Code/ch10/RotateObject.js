@@ -171,12 +171,13 @@ var g_MvpMatrix = new Matrix4(); // Model view projection matrix
 function draw(gl, n, viewProjMatrix, u_MvpMatrix, currentAngle) {
   // Caliculate The model view projection matrix and pass it to u_MvpMatrix
   g_MvpMatrix.set(viewProjMatrix);
- // g_MvpMatrix.rotate(currentAngle[0], 1.0, 0.0, 0.0); // Rotation around x-axis
- // g_MvpMatrix.rotate(currentAngle[1], 0.0, 1.0, 0.0); // Rotation around y-axis
+  g_MvpMatrix.rotate(currentAngle[0], 1.0, 0.0, 0.0); // Rotation around x-axis
+  g_MvpMatrix.rotate(currentAngle[1], 0.0, 1.0, 0.0); // Rotation around y-axis
+  //modelMatrix.rotate(currentAngle[0], 1.0, 0.0, 0.0); // Rotation around x-axis
+  //modelMatrix.rotate(currentAngle[1], 0.0, 1.0, 0.0); // Rotation around y-axis
+  //g_MvpMatrix.multiply(modelMatrix);
 
-  modelMatrix.rotate(currentAngle[0], 1.0, 0.0, 0.0); // Rotation around x-axis
-  modelMatrix.rotate(currentAngle[1], 0.0, 1.0, 0.0); // Rotation around y-axis
-  g_MvpMatrix.multiply(modelMatrix);
+
 
   gl.uniformMatrix4fv(u_MvpMatrix, false, g_MvpMatrix.elements);
 
