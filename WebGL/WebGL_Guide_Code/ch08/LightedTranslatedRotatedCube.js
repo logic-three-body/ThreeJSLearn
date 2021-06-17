@@ -5,23 +5,23 @@ var VSHADER_SOURCE =
   'attribute vec4 a_Color;\n' +
   'attribute vec4 a_Normal;\n' +
   'uniform mat4 u_MvpMatrix;\n' +
-  'uniform mat4 u_NormalMatrix;\n' +   // Transformation matrix of the normal
-  'uniform vec3 u_LightColor;\n' +     // Light color
+  'uniform mat4 u_NormalMatrix;\n' + // Transformation matrix of the normal
+  'uniform vec3 u_LightColor;\n' + // Light color
   'uniform vec3 u_LightDirection;\n' + // Light direction (in the world coordinate, normalized)
-  'uniform vec3 u_AmbientLight;\n' +   // Ambient light color
+  'uniform vec3 u_AmbientLight;\n' + // Ambient light color
   'varying vec4 v_Color;\n' +
   'void main() {\n' +
   '  gl_Position = u_MvpMatrix * a_Position;\n' +
-     // Recalculate the normal based on the model matrix and make its length 1.
+  // Recalculate the normal based on the model matrix and make its length 1.
   '  vec3 normal = normalize(vec3(u_NormalMatrix * a_Normal));\n' +
-     // Calculate the dot product of the light direction and the orientation of a surface (the normal)
+  // Calculate the dot product of the light direction and the orientation of a surface (the normal)
   '  float nDotL = max(dot(u_LightDirection, normal), 0.0);\n' +
-     // Calculate the color due to diffuse reflection
+  // Calculate the color due to diffuse reflection
   '  vec3 diffuse = u_LightColor * a_Color.rgb * nDotL;\n' +
-     // Calculate the color due to ambient reflection
+  // Calculate the color due to ambient reflection
   '  vec3 ambient = u_AmbientLight * a_Color.rgb;\n' +
-     // Add the surface colors due to diffuse reflection and ambient reflection
-  '  v_Color = vec4(diffuse + ambient, a_Color.a);\n' + 
+  // Add the surface colors due to diffuse reflection and ambient reflection
+  '  v_Color = vec4(diffuse + ambient, a_Color.a);\n' +
   '}\n';
 
 // Fragment shader program
@@ -68,7 +68,7 @@ function main() {
   var u_LightColor = gl.getUniformLocation(gl.program, 'u_LightColor');
   var u_LightDirection = gl.getUniformLocation(gl.program, 'u_LightDirection');
   var u_AmbientLight = gl.getUniformLocation(gl.program, 'u_AmbientLight');
-  if (!u_MvpMatrix || !u_NormalMatrix || !u_LightColor || !u_LightDirection || !u_AmbientLight) { 
+  if (!u_MvpMatrix || !u_NormalMatrix || !u_LightColor || !u_LightDirection || !u_AmbientLight) {
     console.log('Failed to get the storage location');
     return;
   }
@@ -77,27 +77,35 @@ function main() {
   gl.uniform3f(u_LightColor, 1.0, 1.0, 1.0);
   // Set the light direction (in the world coordinate)
   var lightDirection = new Vector3([0.0, 3.0, 4.0]);
-  lightDirection.normalize();     // Normalize
+  lightDirection.normalize(); // Normalize
   gl.uniform3fv(u_LightDirection, lightDirection.elements);
   // Set the ambient light
   gl.uniform3f(u_AmbientLight, 0.2, 0.2, 0.2);
 
-  var modelMatrix = new Matrix4();  // Model matrix
-  var mvpMatrix = new Matrix4();    // Model view projection matrix
+  var modelMatrix = new Matrix4(); // Model matrix
+  var mvpMatrix = new Matrix4(); // Model view projection matrix
   var normalMatrix = new Matrix4(); // Transformation matrix for normals
 
   // Calculate the model matrix
-  modelMatrix.setTranslate(0, 0.9, 0); // Translate to the y-axis direction
-  modelMatrix.rotate(90, 0, 0, 1);     // Rotate 90 degree around the z-axis
+  modelMatrix.setTranslate(0, 0, 0); // Translate to the y-axis direction
+  modelMatrix.rotate(90, 0, 0, 1); // Rotate 90 degree around the z-axis
   // Calculate the view projection matrix
-  mvpMatrix.setPerspective(30, canvas.width/canvas.height, 1, 100);
+  mvpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 100);
   mvpMatrix.lookAt(3, 3, 7, 0, 0, 0, 0, 1, 0);
+  document.onkeydown = function (ev) {
+    keydown(ev,gl, u_MvpMatrix, mvpMatrix, normalMatrix, modelMatrix, u_NormalMatrix, n);
+  }
   // Pass the model view projection matrix to u_MvpMatrix
-  var tick = function() {   // Start drawing
-    draw(gl, u_MvpMatrix, mvpMatrix, normalMatrix, modelMatrix, u_NormalMatrix, n);
-    requestAnimationFrame(tick, canvas);
-  };
-  tick();
+  draw(gl, u_MvpMatrix, mvpMatrix, normalMatrix, modelMatrix, u_NormalMatrix, n);
+}
+
+function keydown(ev, gl, u_MvpMatrix, mvpMatrix, normalMatrix, modelMatrix, u_NormalMatrix, n) {
+  var move = 0.01
+  if (ev.keyCode == 39) // The right arrow key was pressed
+  {
+    modelMatrix.setTranslate(-move, 0, 0); // Translate to the y-axis direction    
+  }
+  draw(gl, u_MvpMatrix, mvpMatrix, normalMatrix, modelMatrix, u_NormalMatrix, n);
 }
 
 function draw(gl, u_MvpMatrix, mvpMatrix, normalMatrix, modelMatrix, u_NormalMatrix, n) {
@@ -125,43 +133,43 @@ function initVertexBuffers(gl) {
   //  v2------v3
   // Coordinates
   var vertices = new Float32Array([
-     1.0, 1.0, 1.0,  -1.0, 1.0, 1.0,  -1.0,-1.0, 1.0,   1.0,-1.0, 1.0, // v0-v1-v2-v3 front
-     1.0, 1.0, 1.0,   1.0,-1.0, 1.0,   1.0,-1.0,-1.0,   1.0, 1.0,-1.0, // v0-v3-v4-v5 right
-     1.0, 1.0, 1.0,   1.0, 1.0,-1.0,  -1.0, 1.0,-1.0,  -1.0, 1.0, 1.0, // v0-v5-v6-v1 up
-    -1.0, 1.0, 1.0,  -1.0, 1.0,-1.0,  -1.0,-1.0,-1.0,  -1.0,-1.0, 1.0, // v1-v6-v7-v2 left
-    -1.0,-1.0,-1.0,   1.0,-1.0,-1.0,   1.0,-1.0, 1.0,  -1.0,-1.0, 1.0, // v7-v4-v3-v2 down
-     1.0,-1.0,-1.0,  -1.0,-1.0,-1.0,  -1.0, 1.0,-1.0,   1.0, 1.0,-1.0  // v4-v7-v6-v5 back
+    1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, // v0-v1-v2-v3 front
+    1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, // v0-v3-v4-v5 right
+    1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, // v0-v5-v6-v1 up
+    -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, // v1-v6-v7-v2 left
+    -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, // v7-v4-v3-v2 down
+    1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0 // v4-v7-v6-v5 back
   ]);
 
   // Colors
   var colors = new Float32Array([
-    1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v1-v2-v3 front
-    1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v3-v4-v5 right
-    1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v0-v5-v6-v1 up
-    1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v1-v6-v7-v2 left
-    1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v7-v4-v3-v2 down
-    1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0　    // v4-v7-v6-v5 back
- ]);
+    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v1-v2-v3 front
+    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v3-v4-v5 right
+    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v5-v6-v1 up
+    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v1-v6-v7-v2 left
+    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v7-v4-v3-v2 down
+    1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0 // v4-v7-v6-v5 back
+  ]);
 
   // Normal
   var normals = new Float32Array([
-    0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,  // v0-v1-v2-v3 front
-    1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,  // v0-v3-v4-v5 right
-    0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,  // v0-v5-v6-v1 up
-   -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,  // v1-v6-v7-v2 left
-    0.0,-1.0, 0.0,   0.0,-1.0, 0.0,   0.0,-1.0, 0.0,   0.0,-1.0, 0.0,  // v7-v4-v3-v2 down
-    0.0, 0.0,-1.0,   0.0, 0.0,-1.0,   0.0, 0.0,-1.0,   0.0, 0.0,-1.0   // v4-v7-v6-v5 back
+    0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, // v0-v1-v2-v3 front
+    1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, // v0-v3-v4-v5 right
+    0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, // v0-v5-v6-v1 up
+    -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, // v1-v6-v7-v2 left
+    0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, // v7-v4-v3-v2 down
+    0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0 // v4-v7-v6-v5 back
   ]);
 
   // Indices of the vertices
   var indices = new Uint8Array([
-     0, 1, 2,   0, 2, 3,    // front
-     4, 5, 6,   4, 6, 7,    // right
-     8, 9,10,   8,10,11,    // up
-    12,13,14,  12,14,15,    // left
-    16,17,18,  16,18,19,    // down
-    20,21,22,  20,22,23     // back
- ]);
+    0, 1, 2, 0, 2, 3, // front
+    4, 5, 6, 4, 6, 7, // right
+    8, 9, 10, 8, 10, 11, // up
+    12, 13, 14, 12, 14, 15, // left
+    16, 17, 18, 16, 18, 19, // down
+    20, 21, 22, 20, 22, 23 // back
+  ]);
 
   // Write the vertex property to buffers (coordinates, colors and normals)
   if (!initArrayBuffer(gl, 'a_Position', vertices, 3)) return -1;
