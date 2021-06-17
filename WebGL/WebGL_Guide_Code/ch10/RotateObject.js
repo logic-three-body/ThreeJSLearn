@@ -135,6 +135,7 @@ function initVertexBuffers(gl) {
   return indices.length;
 }
 
+var modelMatrix = new Matrix4();  // Model matrix
 function initEventHandlers(canvas, currentAngle) {
   var dragging = false;         // Dragging or not
   var lastX = -1, lastY = -1;   // Last position of the mouse
@@ -166,11 +167,17 @@ function initEventHandlers(canvas, currentAngle) {
 }
 
 var g_MvpMatrix = new Matrix4(); // Model view projection matrix
+
 function draw(gl, n, viewProjMatrix, u_MvpMatrix, currentAngle) {
   // Caliculate The model view projection matrix and pass it to u_MvpMatrix
   g_MvpMatrix.set(viewProjMatrix);
-  g_MvpMatrix.rotate(currentAngle[0], 1.0, 0.0, 0.0); // Rotation around x-axis
-  g_MvpMatrix.rotate(currentAngle[1], 0.0, 1.0, 0.0); // Rotation around y-axis
+ // g_MvpMatrix.rotate(currentAngle[0], 1.0, 0.0, 0.0); // Rotation around x-axis
+ // g_MvpMatrix.rotate(currentAngle[1], 0.0, 1.0, 0.0); // Rotation around y-axis
+
+  modelMatrix.rotate(currentAngle[0], 1.0, 0.0, 0.0); // Rotation around x-axis
+  modelMatrix.rotate(currentAngle[1], 0.0, 1.0, 0.0); // Rotation around y-axis
+  g_MvpMatrix.multiply(modelMatrix);
+
   gl.uniformMatrix4fv(u_MvpMatrix, false, g_MvpMatrix.elements);
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);     // Clear buffers
