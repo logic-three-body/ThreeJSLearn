@@ -87,13 +87,13 @@ function main() {
   var normalMatrix = new Matrix4(); // Transformation matrix for normals
 
   // Calculate the model matrix
-  modelMatrix.setTranslate(0, 0, 0); // Translate to the y-axis direction
+  //modelMatrix.setTranslate(0, 0, 0); // Translate to the y-axis direction
   modelMatrix.rotate(90, 0, 0, 1); // Rotate 90 degree around the z-axis
   // Calculate the view projection matrix
   mvpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 100);
   mvpMatrix.lookAt(3, 3, 7, 0, 0, 0, 0, 1, 0);
   document.onkeydown = function (ev) {
-    keydown(ev,gl, u_MvpMatrix, mvpMatrix, normalMatrix, modelMatrix, u_NormalMatrix, n);
+    keydown(ev, gl, u_MvpMatrix, mvpMatrix, normalMatrix, modelMatrix, u_NormalMatrix, n);
   }
   // Pass the model view projection matrix to u_MvpMatrix
   draw(gl, u_MvpMatrix, mvpMatrix, normalMatrix, modelMatrix, u_NormalMatrix, n);
@@ -103,7 +103,23 @@ function keydown(ev, gl, u_MvpMatrix, mvpMatrix, normalMatrix, modelMatrix, u_No
   var move = 0.01
   if (ev.keyCode == 39) // The right arrow key was pressed
   {
-    modelMatrix.setTranslate(-move, 0, 0); // Translate to the y-axis direction    
+    modelMatrix.setTranslate(0, -move, 0); // right arrow    
+  }
+  else if (ev.keyCode == 37)
+  {
+    modelMatrix.setTranslate(0, move, 0); // left arrow      
+  }
+  else if (ev.keyCode == 40)// down arrow    
+  {
+    modelMatrix.setTranslate(-move, 0, 0); 
+  }
+  else if (ev.keyCode == 38)// down arrow    
+  {
+    modelMatrix.setTranslate(move, 0, 0); 
+  }   
+  else
+  {
+    return;
   }
   draw(gl, u_MvpMatrix, mvpMatrix, normalMatrix, modelMatrix, u_NormalMatrix, n);
 }
