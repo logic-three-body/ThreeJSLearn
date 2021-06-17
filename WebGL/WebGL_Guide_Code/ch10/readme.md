@@ -1,4 +1,4 @@
-# WebGL编程之Blinn-Phong光照模型
+# WebGL编程之Phong光照模型
 
 前言
 
