@@ -9,7 +9,7 @@ var VSHADER_SOURCE =
   'uniform vec3 u_LightColor;\n' + // Light color
   'uniform vec3 u_LightDirection;\n' + // Light direction (in the world coordinate, normalized)
   'uniform vec3 u_AmbientLight;\n' + // Ambient light color
-  'uniform vec3 u_CameraPosition;\n'+
+  'uniform vec3 u_CameraPosition;\n' +
   'varying vec4 v_Color;\n' +
   'void main() {\n' +
   '  gl_Position = u_MvpMatrix * a_Position;\n' +
@@ -27,7 +27,7 @@ var VSHADER_SOURCE =
   ' vec3 reflectDir = reflect(u_LightDirection,normal);' +
   //Calculate specular
   'float spec =pow (max(dot(viewDir, reflectDir), 0.0), 35.0);' +
-  'vec3 specular = u_LightColor*spec*4.0;'+
+  'vec3 specular = u_LightColor*spec*4.0;' +
   // Add the surface colors due to diffuse reflection and ambient reflection
   '  v_Color = vec4(diffuse + ambient + specular, a_Color.a);\n' +
   '}\n';
@@ -92,9 +92,11 @@ function main() {
   gl.uniform3f(u_AmbientLight, 0.2, 0.2, 0.2);
 
   //Set Camera parm
-  var g_eyeX = 0.20, g_eyeY = 0.25, g_eyeZ = 0.25; // Eye position
+  var g_eyeX = 3,
+    g_eyeY = 3,
+    g_eyeZ = 7; // Eye position
   var CameraPos = new Vector3(g_eyeX, g_eyeY, g_eyeZ);
-  gl.uniform3fv(u_CameraPosition,CameraPos.elements);
+  gl.uniform3fv(u_CameraPosition, CameraPos.elements);
 
   var modelMatrix = new Matrix4(); // Model matrix
   var mvpMatrix = new Matrix4(); // Model view projection matrix
@@ -105,7 +107,7 @@ function main() {
   modelMatrix.rotate(90, 0, 0, 1); // Rotate 90 degree around the z-axis
   // Calculate the view projection matrix
   mvpMatrix.setPerspective(30, canvas.width / canvas.height, 1, 100);
-  mvpMatrix.lookAt(3, 3, 7, 0, 0, 0, 0, 1, 0);
+  mvpMatrix.lookAt(g_eyeX, g_eyeY, g_eyeZ, 0, 0, 0, 0, 1, 0);
   document.onkeydown = function (ev) {
     keydown(ev, gl, u_MvpMatrix, mvpMatrix, normalMatrix, modelMatrix, u_NormalMatrix, n);
   }
@@ -120,44 +122,34 @@ function keydown(ev, gl, u_MvpMatrix, mvpMatrix, normalMatrix, modelMatrix, u_No
   {
     console.log("PRESS 39");
     modelMatrix.setTranslate(0, -move, 0); // right arrow    
-  }
-  else if (ev.keyCode == 37)
-  {
+  } else if (ev.keyCode == 37) {
     console.log("PRESS 37");
     modelMatrix.setTranslate(0, move, 0); // left arrow      
-  }
-  else if (ev.keyCode == 40)// down arrow    
+  } else if (ev.keyCode == 40) // down arrow    
   {
     console.log("PRESS 40");
-    modelMatrix.setTranslate(-move, 0, 0); 
-  }
-  else if (ev.keyCode == 38)// down arrow    
+    modelMatrix.setTranslate(-move, 0, 0);
+  } else if (ev.keyCode == 38) // down arrow    
   {
     console.log("PRESS 38");
-    modelMatrix.setTranslate(move, 0, 0); 
-  }
-  else if (ev.keyCode == 68)// down D 
+    modelMatrix.setTranslate(move, 0, 0);
+  } else if (ev.keyCode == 68) // down D 
   {
-    modelMatrix.rotate(90+angle, 0, 0, 1); // left arrow 
+    modelMatrix.rotate(90 + angle, 0, 0, 1); // left arrow 
     console.log("PRESS D");
-  }
-  else if (ev.keyCode == 65)// down A   
+  } else if (ev.keyCode == 65) // down A   
   {
     console.log("PRESS A");
-    modelMatrix.rotate(90-angle, 0, 0); 
-  }
-  else if (ev.keyCode == 87)// down W 
+    modelMatrix.rotate(90 - angle, 0, 0);
+  } else if (ev.keyCode == 87) // down W 
   {
-    modelMatrix.rotate(90+angle, 0, 1, 0); // left arrow 
+    modelMatrix.rotate(90 + angle, 0, 1, 0); // left arrow 
     console.log("PRESS W");
-  }
-  else if (ev.keyCode == 83)// down S   
+  } else if (ev.keyCode == 83) // down S   
   {
     console.log("PRESS S");
-    modelMatrix.rotate(90-angle, 0, 1,0); 
-  }  
-  else
-  {
+    modelMatrix.rotate(90 - angle, 0, 1, 0);
+  } else {
     return;
   }
   draw(gl, u_MvpMatrix, mvpMatrix, normalMatrix, modelMatrix, u_NormalMatrix, n);
